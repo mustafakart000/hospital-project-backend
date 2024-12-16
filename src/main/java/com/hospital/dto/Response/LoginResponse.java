@@ -1,4 +1,4 @@
-package com.hospital.dto;
+package com.hospital.dto.Response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class LoginResponse {
     private String username; // Kullanıcı adı
+    private String tcKimlik; // Kullanıcı adı
     private String role; // Kullanıcı rolü
     private String token; // JWT token
     private String message; // Yanıt mesajı

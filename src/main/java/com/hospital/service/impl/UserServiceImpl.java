@@ -1,30 +1,40 @@
 package com.hospital.service.impl;
 
+import java.time.LocalDate;
+
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.hospital.dto.DoctorRegisterRequest;
 import com.hospital.dto.LoginRequest;
-import com.hospital.dto.LoginResponse;
 import com.hospital.dto.RegisterRequest;
+import com.hospital.dto.UserDetailsResponse;
+import com.hospital.dto.Response.LoginResponse;
 import com.hospital.entity.Admin;
 import com.hospital.entity.Doctor;
 import com.hospital.entity.Patient;
 import com.hospital.entity.User;
+import com.hospital.exception.EmailAlreadyExistsException;
+import com.hospital.exception.InvalidCredentialsException;
 import com.hospital.exception.UserAlreadyExistsException;
+import com.hospital.model.DoctorSpeciality;
 import com.hospital.model.Role;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.UserRepository;
 import com.hospital.security.JwtUtil;
 import com.hospital.service.UserService;
+import com.hospital.mapper.DoctorMapper;
+import com.hospital.mapper.PatientMapper;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
-
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.LocalDate;
-
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
 
 // Kullanıcı işlemlerini yöneten servis sınıfı
 @Service
@@ -35,39 +45,50 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil; // JWT token işlemleri için
     private final AuthenticationManager authenticationManager; // Kimlik doğrulama işlemleri için
     private final DoctorRepository doctorRepository; // Doktor veritabanı işlemleri için
+
+@PersistenceContext
+    private EntityManager entityManager;
+
+    
+
     @Override
     public void createAdminUser() {
-        String adminUsername = "admin";
-        String adminPassword = "admin123"; // Şifreyi şifreleyin
-        String adminAd = "Admin"; // Admin adı
-        String adminSoyad = "User"; // Admin soyadı
-        String adminEmail = "admin@example.com"; // Admin e-posta
-        String adminTelefon = "1234567890"; // Admin telefon
-        LocalDate adminBirthDate = LocalDate.of(1990, 1, 1); // Admin doğum tarihi
-
-        if (!userRepository.existsByUsername(adminUsername)) {
+        String adminPassword = "admin123";
+        String adminTcKimlik = "admin";
+        
+        if (!userRepository.existsByUsername(adminTcKimlik)) {
             Admin adminUser = new Admin();
-            adminUser.setUsername(adminUsername);
-            adminUser.setPassword(passwordEncoder.encode(adminPassword)); // Şifreyi şifreleyin
-            adminUser.setAd(adminAd);
-            adminUser.setSoyad(adminSoyad);
-            adminUser.setEmail(adminEmail);
-            adminUser.setTelefon(adminTelefon);
-            adminUser.setBirthDate(adminBirthDate); // Doğum tarihini ayarlayın
+            adminUser.setUsername(adminTcKimlik);
+            adminUser.setTcKimlik("22345678901");
+            adminUser.setPassword(passwordEncoder.encode(adminPassword));
             adminUser.setRole(Role.ADMIN.name());
+            adminUser.setAd("Admin");
+            adminUser.setSoyad("User");
+            adminUser.setEmail("admin1@example.com");
+            adminUser.setTelefon("1234567890");
+            adminUser.setBirthDate(LocalDate.of(1990, 1, 1));
+            adminUser.setKanGrubu("A Rh+");
+            adminUser.setAdres("Admin Address");
+                
+
             userRepository.save(adminUser);
+            System.out.println("Admin kullanıcısı oluşturuldu: " + adminTcKimlik);
         }
     }
     @Override
     public LoginResponse login(LoginRequest request) {
         // Kullanıcı kimlik doğrulaması yapar
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
+        try {
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            );
+        } catch (AuthenticationException e) {
+            throw new InvalidCredentialsException("Kullanıcı adı veya şifre hatalı");
+        }
         
         // Kullanıcıyı veritabanından bulur
         User user = userRepository.findByUsername(request.getUsername())
-            .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+            .orElseThrow(() -> new InvalidCredentialsException("Kullanıcı bulunamadı"));
             
         // Kullanıcı için JWT token oluşturur
         String token = jwtUtil.generateToken(user.getUsername());
@@ -83,72 +104,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
 public void register(RegisterRequest request) {
-    // Kullanıcı adı zaten varsa hata fırlatır
-    if (userRepository.existsByUsername(request.getUsername())) {
-        throw new UserAlreadyExistsException("Bu kullanıcı adı zaten kullanılıyor");
+    // TC Kimlik kontrolü
+    if (userRepository.existsByTcKimlik(request.getTcKimlik())) {
+        throw new UserAlreadyExistsException("Bu TC Kimlik numarası zaten kullanılıyor: " + request.getTcKimlik());
+    } else if (userRepository.existsByEmail(request.getEmail())) {
+        throw new EmailAlreadyExistsException("Bu email adresi zaten kullanılıyor: " + request.getEmail());
     }
 
-    // Yeni kullanıcı oluşturur ve kaydeder
-    User patient = new Patient();
-    
-    // Temel bilgileri ayarla
-    patient.setUsername(request.getUsername());
-    patient.setPassword(passwordEncoder.encode(request.getPassword())); // Şifreyi şifrele
-    patient.setRole(Role.PATIENT.name()); // Kullanıcının rolünü ata
+    // PatientMapper kullanarak yeni hasta oluştur
+    Patient patient = PatientMapper.mapToPatient(request, passwordEncoder);
 
-    // Ek bilgileri User nesnesine aktar
-    patient.setAd(request.getAd());
-    patient.setSoyad(request.getSoyad());
-    patient.setEmail(request.getEmail());
-    patient.setTelefon(request.getTelefon());
-    patient.setAdres(request.getAdres());
-    patient.setBirthDate(request.getBirthDate()); // Doğum tarihini ekle
-    patient.setKanGrubu(request.getKanGrubu()); // Kan grubunu ekle
-
-    // Kullanıcıyı veritabanına kaydet
     userRepository.save(patient);
 }
 
-
-@Override
-@PreAuthorize("hasRole('ADMIN')")
-public void registerDoctor(DoctorRegisterRequest request) {
-    // Kullanıcı adı zaten varsa hata fırlatır
-    if (userRepository.existsByUsername(request.getUsername())) {
-        throw new UserAlreadyExistsException("Bu kullanıcı adı zaten kullanılıyor");
-    }
-
-    // Yeni doktor nesnesi oluştur ve bilgileri aktar
-    Doctor doctor = new Doctor();
-    doctor.setUsername(request.getUsername());
-    doctor.setPassword(passwordEncoder.encode(request.getPassword())); // Şifreyi şifrele
-    doctor.setRole(Role.DOCTOR.name()); // Doktor rolünü ata
-
-    // Ek bilgileri aktarma
-    doctor.setAd(request.getAd());
-    doctor.setSoyad(request.getSoyad());
-    doctor.setUzmanlik(request.getUzmanlik()); // Uzmanlık alanını ekle
-    doctor.setDiplomaNo(request.getDiplomaNo()); // Diploma numarasını ekle
-    doctor.setUnvan(request.getUnvan()); // Unvanı ekle
-    doctor.setTelefon(request.getTelefon());
-    doctor.setEmail(request.getEmail());
-    doctor.setAdres(request.getAdres()); // Adresi ekle
-    doctor.setBirthDate(request.getBirthDate()); // Doğum tarihini ekle
-    doctor.setKanGrubu(request.getKanGrubu()); // Kan grubunu ekle
-
-    // Doktoru veritabanına kaydet
-    userRepository.save(doctor);
-}
 @Override
 @PreAuthorize("hasRole('ADMIN')")
 public void registerAdmin(RegisterRequest request) {
       // Kullanıcı adı zaten varsa hata fırlatır
-      if (userRepository.existsByUsername(request.getUsername())) {
+      if (userRepository.existsByTcKimlik(request.getTcKimlik())) {
         throw new UserAlreadyExistsException("Bu kullanıcı adı zaten kullanılıyor");
     }
     // Admin kaydı işlemleri burada gerçekleştirilebilir
     Admin admin = new Admin();
-    admin.setUsername(request.getUsername());
     admin.setPassword(passwordEncoder.encode(request.getPassword())); // Şifreyi şifrele
     admin.setRole(Role.ADMIN.name()); // Admin rolünü ata
     admin.setAd(request.getAd());
@@ -157,27 +134,66 @@ public void registerAdmin(RegisterRequest request) {
     admin.setTelefon(request.getTelefon());
     admin.setAdres(request.getAdres());
     admin.setBirthDate(request.getBirthDate());
-    
+    admin.setTcKimlik(request.getTcKimlik()); // T.C. Kimlik numarasını ekle
     userRepository.save(admin);
 }
 
 @Override
 public LoginResponse doctorLogin(LoginRequest request) {
-    authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-    );
-    
-    Doctor doctor = doctorRepository.findByUsername(request.getUsername())
-        .orElseThrow(() -> new RuntimeException("Doktor bulunamadı"));
-    
-    String token = jwtUtil.generateToken(doctor.getUsername());
-    
-    return LoginResponse.builder()
-        .username(doctor.getUsername())
-        .role(doctor.getRole())
-        .token(token)
-        .message("Doktor girişi başarılı")
-        .build();
+    try {
+        // Doktoru TC Kimlik ile bul
+        Doctor doctor = doctorRepository.findByTcKimlik(request.getTcKimlik())
+            .orElseThrow(() -> new InvalidCredentialsException("Doktor bulunamadı"));
+            
+        // Şifre kontrolü
+        if (!passwordEncoder.matches(request.getPassword(), doctor.getPassword())) {
+            throw new InvalidCredentialsException("TC Kimlik veya şifre hatalı");
+        }
+        
+        if (!doctor.getRole().equals(Role.DOCTOR.name())) {
+            throw new InvalidCredentialsException("Bu giriş sadece doktorlar içindir");
+        }
+        
+        String token = jwtUtil.generateToken(doctor.getTcKimlik());
+        
+        return LoginResponse.builder()
+            .tcKimlik(doctor.getTcKimlik())
+            .role(doctor.getRole())
+            .token(token)
+            .message("Doktor girişi başarılı")
+            .build();
+    } catch (AuthenticationException e) {
+        throw new InvalidCredentialsException("TC Kimlik veya şifre hatalı");
+    }
 }
+@Override
+public UserDetailsResponse getCurrentUserDetails(UserDetails userDetails) {
+    //Kullanıcı detaylarını döndürür
+    User user = userRepository.findByUsername(userDetails.getUsername())
+        .map(u -> (User) u)
+        .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+    // UserDetailsResponse nesnesini oluştur ve doldur
+    return UserDetailsResponse.builder()
+    
+    .username(user.getUsername())
+    .email(user.getEmail())
+    .role(user.getRole())
+    .build();
+}
+
+@Override
+@PreAuthorize("hasRole('ADMIN')")
+public void registerDoctor(DoctorRegisterRequest request) {
+    if (userRepository.existsByTcKimlik(request.getTcKimlik())) {
+        throw new UserAlreadyExistsException("Bu kullanıcı adı zaten kullanılıyor" + request.getTcKimlik());
+    } else if (userRepository.existsByEmail(request.getEmail())) {
+        throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
+    }
+    
+    Doctor doctor = DoctorMapper.mapToDoctor(request, passwordEncoder);
+    userRepository.save(doctor);
+}
+
+
 
 }

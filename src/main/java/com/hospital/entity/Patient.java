@@ -5,6 +5,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 import java.util.List;
 
@@ -15,9 +16,14 @@ import java.util.List;
 public class Patient extends User {
     
     private LocalDate dogum_tarihi;
-    private String kanGrubu;
+    
     private String medicalHistory;
 
     @ManyToMany
     private List<Doctor> doctors;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Reservations> reservations;
+
+    
 } 
