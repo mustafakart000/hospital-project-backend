@@ -64,7 +64,7 @@ public class AuthController {
         return ResponseEntity.ok(userService.getCurrentUserDetails(userDetails));
     }
 
-    @PreAuthorize("hasRole('ADMIN')") 
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','PATIENT')") 
     @GetMapping("/allspecialties")
     public ResponseEntity<List<Map<String, String>>> getAllSpecialties() {
         System.out.println("getAllSpecialties" + doctorService.getAllSpecialties());
