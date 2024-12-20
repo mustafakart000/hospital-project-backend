@@ -1,6 +1,9 @@
 package com.hospital.entity;
 
 import jakarta.persistence.*;
+
+
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +28,9 @@ public abstract class User implements UserDetails {
     private String password;
 
     @Column(nullable = false)
+    private String tcKimlik;
+    
+    @Column(nullable = false)
     private String role;
 
     @Column(nullable = false)
@@ -41,10 +47,16 @@ public abstract class User implements UserDetails {
 
     @Column(nullable = true)
     private String adres;
+
     @Column(nullable = false)
     private LocalDate birthDate;
     
-    @Column(nullable = true)
+ 
+
+    
+   
+    
+    @Column(name = "kan_grubu", nullable = true) // Doğru kolon adı eşleştirmesi
     private String kanGrubu;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -70,4 +82,5 @@ public abstract class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

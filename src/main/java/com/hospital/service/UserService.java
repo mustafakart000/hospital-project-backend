@@ -3,7 +3,13 @@ package com.hospital.service;
 import com.hospital.dto.RegisterRequest;
 import com.hospital.dto.DoctorRegisterRequest;
 import com.hospital.dto.LoginRequest;
-import com.hospital.dto.LoginResponse;
+
+import com.hospital.dto.Response.LoginResponse;
+
+import com.hospital.dto.UserDetailsResponse;
+
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 // Kullanıcı işlemleri için arayüz
 public interface UserService {
@@ -13,4 +19,9 @@ public interface UserService {
     void registerDoctor(DoctorRegisterRequest request); // Doktor kaydı için metod
     void registerAdmin(RegisterRequest request); // Doktor kaydı için metod
     void createAdminUser(); // Admin kullanıcı oluşturma metodu
+
+
+    UserDetailsResponse getCurrentUserDetails(UserDetails userDetails);
+    
+
 } 

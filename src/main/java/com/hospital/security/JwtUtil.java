@@ -32,6 +32,7 @@ public class JwtUtil {
     @PostConstruct
     public void init() {
         // Gizli anahtarı kullanarak bir Key oluşturur
+
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -52,7 +53,7 @@ public class JwtUtil {
     }
 
     private Claims extractClaims(String token) {
-        // Token'dan iddiaları çıkarır
+
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

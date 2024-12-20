@@ -42,8 +42,13 @@ public class SecurityConfig {
             .requestMatchers("/auth/login","/auth/doctor/login","/auth/admin/login", "/auth/register").permitAll()
             .requestMatchers("/auth/doctor/register").hasRole(Role.ADMIN.name())
             .requestMatchers("/auth/admin/register").hasRole(Role.ADMIN.name())
+
             .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
             .requestMatchers("/doctor/**").hasRole(Role.DOCTOR.name())
+    .requestMatchers("/doctor/all").hasRole(Role.ADMIN.name())
+            .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
+            .requestMatchers("/doctor/**").hasAnyRole(Role.DOCTOR.name(),Role.ADMIN.name())
+
             .requestMatchers("/patient/**").hasRole(Role.PATIENT.name())
             .anyRequest().authenticated()
             )
@@ -71,6 +76,7 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         // Şifreleme için bir PasswordEncoder sağlar
+
         return new BCryptPasswordEncoder();
     }
 
