@@ -24,7 +24,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
-
 // Uygulamanın güvenlik yapılandırmasını sağlayan sınıf
 @Configuration
 @EnableWebSecurity
@@ -33,30 +32,25 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter)
+            throws Exception {
         // Güvenlik filtre zincirini yapılandırır
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/auth/login","/auth/doctor/login","/auth/admin/login", "/auth/register").permitAll()
-            .requestMatchers("/auth/doctor/register").hasRole(Role.ADMIN.name())
-            .requestMatchers("/auth/admin/register").hasRole(Role.ADMIN.name())
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/login", "/auth/doctor/login", "/auth/admin/login", "/auth/register")
+                        .permitAll()
+                        .requestMatchers("/auth/doctor/register").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/auth/admin/register").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/doctor/**").hasAnyRole(Role.DOCTOR.name(), Role.ADMIN.name())
+                        .requestMatchers("/patient/**").hasRole(Role.PATIENT.name())
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-            .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-            .requestMatchers("/doctor/**").hasRole(Role.DOCTOR.name())
-    .requestMatchers("/doctor/all").hasRole(Role.ADMIN.name())
-            .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-            .requestMatchers("/doctor/**").hasAnyRole(Role.DOCTOR.name(),Role.ADMIN.name())
-
-            .requestMatchers("/patient/**").hasRole(Role.PATIENT.name())
-            .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-            
         return http.build();
     }
 
@@ -70,7 +64,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         // Kullanıcı detaylarını yükleyen bir servis sağlar
         return username -> userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Bean
@@ -94,7 +88,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
