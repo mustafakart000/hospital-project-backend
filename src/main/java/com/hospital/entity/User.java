@@ -3,7 +3,7 @@ package com.hospital.entity;
 import jakarta.persistence.*;
 
 
-import jakarta.validation.constraints.NotNull;
+
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

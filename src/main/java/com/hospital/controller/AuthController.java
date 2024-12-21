@@ -2,7 +2,6 @@ package com.hospital.controller;
 
 import java.util.List;
 import java.util.Map;
-import com.hospital.model.DoctorSpeciality;
 import com.hospital.dto.DoctorRegisterRequest;
 import com.hospital.dto.LoginRequest;
 import com.hospital.dto.RegisterRequest;

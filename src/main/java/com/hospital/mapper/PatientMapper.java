@@ -1,7 +1,6 @@
 package com.hospital.mapper;
 
 import com.hospital.dto.RegisterRequest;
-import com.hospital.dto.Response.PatientResponse;
 import com.hospital.entity.Patient;
 import com.hospital.model.Role;
 
