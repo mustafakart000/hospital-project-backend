@@ -2,6 +2,7 @@ package com.hospital.controller;
 
 import java.util.List;
 import java.util.Map;
+import com.hospital.model.DoctorSpeciality;
 import com.hospital.dto.DoctorRegisterRequest;
 import com.hospital.dto.LoginRequest;
 import com.hospital.dto.RegisterRequest;
@@ -68,8 +69,6 @@ public class AuthController {
     public ResponseEntity<List<Map<String, String>>> getAllSpecialties() {
         System.out.println("getAllSpecialties" + doctorService.getAllSpecialties());
         return ResponseEntity.ok(doctorService.getAllSpecialties());
-    };
-
-    
+    }
 
 }

@@ -42,10 +42,13 @@ public class SecurityConfig {
             .requestMatchers("/auth/login","/auth/doctor/login","/auth/admin/login", "/auth/register").permitAll()
             .requestMatchers("/auth/doctor/register").hasRole(Role.ADMIN.name())
             .requestMatchers("/auth/admin/register").hasRole(Role.ADMIN.name())
-            .requestMatchers("/doctor/all").hasRole(Role.ADMIN.name())
+
+            .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
+            .requestMatchers("/doctor/**").hasRole(Role.DOCTOR.name())
+    .requestMatchers("/doctor/all").hasRole(Role.ADMIN.name())
             .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
             .requestMatchers("/doctor/**").hasAnyRole(Role.DOCTOR.name(),Role.ADMIN.name())
-            .requestMatchers("/patient/**").hasAnyRole(Role.DOCTOR.name(),Role.PATIENT.name())
+            .requestMatchers("/patient/**").hasRole(Role.PATIENT.name())
             .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

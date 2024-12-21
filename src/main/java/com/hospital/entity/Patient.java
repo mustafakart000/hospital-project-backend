@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
 
 import java.util.List;
 
@@ -16,8 +15,9 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "patients")
 public class Patient extends User {
-
-
+    
+    private LocalDate dogum_tarihi;
+    
     private String medicalHistory;
 
     @ManyToMany
@@ -27,5 +27,5 @@ public class Patient extends User {
     @JsonIgnore
     private List<Reservations> reservations;
 
-    
+ 
 } 

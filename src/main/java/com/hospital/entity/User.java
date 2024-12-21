@@ -1,6 +1,8 @@
 package com.hospital.entity;
 
 import jakarta.persistence.*;
+
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,9 +47,14 @@ public abstract class User implements UserDetails {
 
     @Column(nullable = true)
     private String adres;
-    
-    @NotNull
+
+    @Column(nullable = false)
     private LocalDate birthDate;
+    
+ 
+
+    
+   
     
     @Column(name = "kan_grubu", nullable = true) // Doğru kolon adı eşleştirmesi
     private String kanGrubu;
@@ -75,8 +82,5 @@ public abstract class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-   
-
 
 }

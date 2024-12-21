@@ -53,8 +53,6 @@ public class JwtUtil {
     }
 
     private Claims extractClaims(String token) {
-        // Token'dan iddiaları çıkarır bu ne demek? token içindeki bilgileri çıkarır. hangi bilgileri çıkarıyoruz?
-       
 
         return Jwts.parserBuilder()
                 .setSigningKey(key)

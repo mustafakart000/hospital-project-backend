@@ -5,6 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+
+
+
+
+
 // Kullanıcı giriş yanıtını temsil eden DTO sınıfı
 @Data
 @Builder
