@@ -12,10 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DoctorMapper {
-    private final PasswordEncoder passwordEncoder;
-    public DoctorMapper(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
+    
+    
 
     public static Doctor mapToDoctor(DoctorRegisterRequest request, PasswordEncoder passwordEncoder) {
         Doctor doctor = new Doctor();

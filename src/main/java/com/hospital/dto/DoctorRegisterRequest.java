@@ -1,16 +1,13 @@
 package com.hospital.dto;
 
-
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-
 
 @Data
 public class DoctorRegisterRequest {
@@ -28,8 +25,6 @@ public class DoctorRegisterRequest {
     @NotBlank(message = "Soyad boş olamaz")
     private String soyad;
 
-
-   
     @NotBlank(message = "Uzmanlık boş olamaz")
     private String uzmanlik;
 
@@ -46,18 +41,11 @@ public class DoctorRegisterRequest {
     @NotBlank(message = "E-posta boş olamaz")
     private String email;
 
-
-
     @NotBlank(message = "E-posta boş olamaz")
     private String adres;
 
     @Pattern(regexp = "^[0-9]{11}$", message = "T.C. Kimlik numarası 11 haneli olmalıdır")
     private String tcKimlik;
-
-
-    @NotBlank(message = "Doğum tarihi boş olamaz")
-
-    @NotNull(message = "Doğum tarihi boş olamaz")
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
