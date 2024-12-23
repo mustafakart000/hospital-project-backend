@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 {
     "java.debug.settings.onBuildFailureProceed": true,
     "java.compile.nullAnalysis.mode": "automatic",
     "java.configuration.updateBuildConfiguration": "interactive"
-=======
-{
-    "java.compile.nullAnalysis.mode": "automatic"
->>>>>>> 3d4ea48d0ff1f323b154a047fa6c71dca5702439
 }
