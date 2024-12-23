@@ -15,24 +15,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.hospital.dto.DoctorRequest;
+import com.hospital.dto.Response.AdminResponseList;
 import com.hospital.dto.Response.DoctorResponseList;
 import com.hospital.dto.Response.GetFullDoctorResponse;
-
+import com.hospital.service.AdminService;
 import com.hospital.service.DoctorService;
 
 @RestController
-@RequestMapping("/doctor")
+@RequestMapping("/admin")
 public class AdminController {
     @Autowired
     private DoctorService doctorService;
 
-    @GetMapping("/all")
+    @Autowired
+    private AdminService adminService;
+
+    @GetMapping("/doctor/all")
     @PreAuthorize("hasRole('ADMIN')")
     public List<DoctorResponseList> getAllDoctors() {
         return doctorService.getAllDoctors();
     }
     //localhost:8080/doctor/delete/1
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/doctor/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteDoctor(@PathVariable Long id) {
         doctorService.deleteDoctor(id);
@@ -41,17 +45,29 @@ public class AdminController {
     // json body hazırlayınız
 
     //localhost:8080/doctor/update/1
-    @PutMapping("/update/{id}")
+    @PutMapping("/doctor/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DOCTOR')")
     public ResponseEntity<HttpStatus> updateDoctor(@PathVariable Long id, @RequestBody DoctorRequest doctorRequest) {
         doctorService.updateDoctor(id, doctorRequest);
         return ResponseEntity.ok(HttpStatus.OK);
     }
     //localhost:8080/doctor/get/1
-    @GetMapping("/get/{id}")
+    @GetMapping("/doctor/get/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DOCTOR')")
     public GetFullDoctorResponse getDoctor(@PathVariable Long id) {
         return doctorService.getDoctorById(id);
+    }
+    //gelAllAdmin
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<AdminResponseList> getAllAdmin() {
+        return adminService.getAllAdmin();
+    }
+    //localhost:8080/admin/delete/1
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteAdmin(@PathVariable Long id) {
+        adminService.deleteAdmin(id);
     }
 
     // 

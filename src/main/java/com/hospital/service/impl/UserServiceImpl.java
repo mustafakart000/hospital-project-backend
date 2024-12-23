@@ -30,6 +30,7 @@ import com.hospital.security.JwtUtil;
 import com.hospital.service.UserService;
 import com.hospital.mapper.DoctorMapper;
 import com.hospital.mapper.PatientMapper;
+import com.hospital.mapper.AdminMapper;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -120,21 +121,17 @@ public void register(RegisterRequest request) {
 @Override
 @PreAuthorize("hasRole('ADMIN')")
 public void registerAdmin(RegisterRequest request) {
-      // Kullanıcı adı zaten varsa hata fırlatır
-      if (userRepository.existsByTcKimlik(request.getTcKimlik())) {
+    if(userRepository.existsByTcKimlik(request.getTcKimlik())) {
         throw new UserAlreadyExistsException("Bu kullanıcı adı zaten kullanılıyor");
     }
-    // Admin kaydı işlemleri burada gerçekleştirilebilir
-    Admin admin = new Admin();
-    admin.setPassword(passwordEncoder.encode(request.getPassword())); // Şifreyi şifrele
-    admin.setRole(Role.ADMIN.name()); // Admin rolünü ata
-    admin.setAd(request.getAd());
-    admin.setSoyad(request.getSoyad());
-    admin.setEmail(request.getEmail());
-    admin.setTelefon(request.getTelefon());
-    admin.setAdres(request.getAdres());
-    admin.setBirthDate(request.getBirthDate());
-    admin.setTcKimlik(request.getTcKimlik()); // T.C. Kimlik numarasını ekle
+    if (userRepository.existsByTelefon(request.getTelefon())) {
+        throw new UserAlreadyExistsException("Bu telefon numarası zaten kullanılıyor");
+    }
+    if (userRepository.existsByEmail(request.getEmail())) {
+        throw new EmailAlreadyExistsException("Bu email adresi zaten kullanılıyor");
+    }
+    
+    Admin admin = AdminMapper.mapToAdmin(request, passwordEncoder);
     userRepository.save(admin);
 }
 
@@ -190,6 +187,9 @@ public void registerDoctor(DoctorRegisterRequest request) {
         throw new UserAlreadyExistsException("Bu kullanıcı adı zaten kullanılıyor" + request.getTcKimlik());
     } else if (userRepository.existsByEmail(request.getEmail())) {
         throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
+    }
+    if (userRepository.existsByTelefon(request.getTelefon())) {
+        throw new EmailAlreadyExistsException("Telefon already exists: " + request.getTelefon());
     }
     
     Doctor doctor = DoctorMapper.mapToDoctor(request, passwordEncoder);

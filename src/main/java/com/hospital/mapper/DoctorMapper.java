@@ -21,7 +21,7 @@ public class DoctorMapper {
         doctor.setTcKimlik(request.getTcKimlik());
         doctor.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        // Rol ve diğer bilgiler
+        
         doctor.setRole(Role.DOCTOR.name());
         doctor.setAd(request.getAd());
         doctor.setSoyad(request.getSoyad());
