@@ -15,4 +15,5 @@ public class AdminResponseList {
     private String role;
     private String ad;
     private String soyad;
+    
 }

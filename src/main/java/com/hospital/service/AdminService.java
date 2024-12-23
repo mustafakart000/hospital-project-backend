@@ -40,4 +40,16 @@ public class AdminService {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
+    public AdminResponseList getAdminById(Long id) {
+        Admin admin = adminRepository.findById(id).orElseThrow(() -> new RuntimeException("Admin bulunamadı"));
+        return AdminResponseList.builder()
+                                .id(admin.getId())
+                                .username(admin.getUsername())
+                                .email(admin.getEmail())
+                                .phoneNumber(admin.getTelefon())
+                                .role(admin.getRole())
+                                .ad(admin.getAd())
+                                .soyad(admin.getSoyad())
+                                .build();
+    }
 }

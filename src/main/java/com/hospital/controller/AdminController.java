@@ -71,6 +71,12 @@ public class AdminController {
     }
 
     // 
+   
 
-    
+    @GetMapping("/get/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AdminResponseList> getAdminById(@PathVariable Long id) {
+        AdminResponseList admin = adminService.getAdminById(id);
+        return ResponseEntity.ok(admin);
+    }
 }
