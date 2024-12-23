@@ -1,12 +1,16 @@
 package com.hospital.mapper;
 
-import com.hospital.dto.RegisterRequest;
 import com.hospital.entity.Patient;
+import com.hospital.dto.Response.PatientResponse;
+import com.hospital.dto.RegisterRequest;
+import com.hospital.dto.Response.MedicalRecordResponse;
+import java.util.stream.Collectors;
 import com.hospital.model.Role;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class PatientMapper {
+
 
     public static Patient mapToPatient(RegisterRequest request, PasswordEncoder passwordEncoder) {
         Patient patient = new Patient();
@@ -17,7 +21,6 @@ public class PatientMapper {
         patient.setAd(request.getAd());
         patient.setSoyad(request.getSoyad());
         patient.setEmail(request.getEmail());
-        patient.setMedicalHistory(request.getMedicalHistory());
         patient.setTelefon(request.getTelefon());
         patient.setAdres(request.getAdres());
         patient.setBirthDate(request.getBirthDate());
@@ -26,5 +29,33 @@ public class PatientMapper {
     }
 
 
-    
-} 
+    public static PatientResponse mapToPatientResponse(Patient patient) {
+        return PatientResponse.builder()
+            .id(patient.getId())
+            .tcKimlik(patient.getTcKimlik())
+            .ad(patient.getAd())
+            .soyad(patient.getSoyad())
+            .email(patient.getEmail())
+            .telefon(patient.getTelefon())
+            .username(patient.getUsername())
+            .role(patient.getRole())
+            .adres(patient.getAdres())
+            .birthDate(patient.getDogum_tarihi())
+            .kanGrubu(patient.getKanGrubu())
+            .doctors(patient.getDoctors())
+            .reservations(patient.getReservations())
+            .medicalRecords(patient.getMedicalHistory().stream()
+                .map(medicalRecord -> MedicalRecordResponse.builder()
+                    .id(medicalRecord.getId())
+                    .category(medicalRecord.getCategory())
+                    .date(medicalRecord.getDate())
+                    .title(medicalRecord.getTitle())
+                    .description(medicalRecord.getDescription())
+                    .doctorNotes(medicalRecord.getDoctorNotes())
+                    .additionalInfo(medicalRecord.getAdditionalInfo())
+                    .attachments(medicalRecord.getAttachments())
+                    .build())
+                .collect(Collectors.toList()))
+            .build();
+    }
+}
