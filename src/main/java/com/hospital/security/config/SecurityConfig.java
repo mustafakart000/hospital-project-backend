@@ -42,11 +42,21 @@ public class SecurityConfig {
             .requestMatchers("/auth/login","/auth/doctor/login","/auth/admin/login", "/auth/register").permitAll()
             .requestMatchers("/auth/doctor/register").hasRole(Role.ADMIN.name())
             .requestMatchers("/auth/admin/register").hasRole(Role.ADMIN.name())
+<<<<<<< HEAD
             .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
             .requestMatchers("/doctor/**").hasAnyRole(Role.ADMIN.name())
             .requestMatchers("/doctor/update/**").hasRole(Role.DOCTOR.name())
             .requestMatchers("/doctor/get/**").hasRole(Role.DOCTOR.name())
             .requestMatchers("/patient/**").hasRole(Role.PATIENT.name())
+=======
+            .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
+            .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
+            .requestMatchers("/doctor/").hasAnyRole(Role.ADMIN.name())
+            .requestMatchers("/doctor/update/").hasRole(Role.DOCTOR.name())
+            .requestMatchers("/doctor/get/").hasRole(Role.DOCTOR.name())
+            .requestMatchers("/medical-record/**").hasAnyRole(Role.PATIENT.name(),Role.DOCTOR.name()  )
+            .requestMatchers("/patient/").hasRole(Role.PATIENT.name())
+>>>>>>> 3d4ea48d0ff1f323b154a047fa6c71dca5702439
             .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -87,12 +97,14 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         // CORS yapılandırmasını sağlar
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        // configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // source.registerCorsConfiguration("/", configuration);
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
