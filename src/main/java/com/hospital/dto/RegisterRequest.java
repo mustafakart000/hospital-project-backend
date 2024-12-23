@@ -9,6 +9,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
+import com.hospital.entity.MedicalRecord;
 
 
 @Data
@@ -46,7 +48,9 @@ public class RegisterRequest {
     @NotNull(message = "Doğum tarihi zorunludur")
     private LocalDate birthDate; // Kullanıcının doğum tarihi
 
-    private String medicalHistory;
+    private List<MedicalRecord> medicalHistory;
+
+    
 
     @NotBlank(message = "Kan grubu zorunludur")
     private String kanGrubu;   // Kullanıcının kan grubu

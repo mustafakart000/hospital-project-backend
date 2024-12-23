@@ -29,7 +29,7 @@ public class PatientResponse {
     private String kanGrubu;
     private List<Doctor> doctors;
     private List<Reservations> reservations;
-    private String medicalHistory;
+    private List<MedicalRecordResponse> medicalRecords;
 }
 // json data oluştur    
 

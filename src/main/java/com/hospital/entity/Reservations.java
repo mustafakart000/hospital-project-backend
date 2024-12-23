@@ -34,7 +34,6 @@ public class Reservations {
     private Long id;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
