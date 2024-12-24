@@ -15,5 +15,8 @@ public class UserDetailsResponse {
     private String username;
     private String email;
     private String role;
+    private String ad;
+    private String soyad;
+    private String token;
     // İhtiyaca göre diğer alanlar eklenebilir
 } 

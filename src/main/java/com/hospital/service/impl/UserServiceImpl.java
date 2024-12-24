@@ -100,6 +100,8 @@ public class UserServiceImpl implements UserService {
             .token(token)
             .id(user.getId())
             .message("Giriş başarılı")
+            .ad(user.getAd())
+            .soyad(user.getSoyad())
             .build();
     }
 
@@ -165,19 +167,22 @@ public LoginResponse doctorLogin(LoginRequest request) {
 }
 @Override
 public UserDetailsResponse getCurrentUserDetails(UserDetails userDetails) {
-    //Kullanıcı detaylarını döndürür
     User user = userRepository.findByUsername(userDetails.getUsername())
         .map(u -> (User) u)
         .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
-    // UserDetailsResponse nesnesini oluştur ve doldur
-    return UserDetailsResponse.builder()
     
-
-    .username(user.getUsername())
-    .email(user.getEmail())
-    .role(user.getRole())
-    .id(user.getId())
-    .build();
+    // Yeni bir JWT token oluştur
+    String token = jwtUtil.generateToken(user.getUsername());
+    
+    return UserDetailsResponse.builder()
+        .username(user.getUsername())
+        .email(user.getEmail())
+        .role(user.getRole())
+        .id(user.getId())
+        .ad(user.getAd())
+        .soyad(user.getSoyad())
+        .token(token)  // Şifre yerine yeni oluşturulan token'ı kullan
+        .build();
 }
 
 @Override
