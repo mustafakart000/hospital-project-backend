@@ -21,4 +21,6 @@ public class LoginResponse {
     private String role; // Kullanıcı rolü
     private String token; // JWT token
     private String message; // Yanıt mesajı
+    private String ad;
+    private String soyad;
 }
