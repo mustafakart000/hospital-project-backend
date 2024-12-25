@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +18,8 @@ import java.io.IOException;
 
 // JWT doğrulama işlemlerini gerçekleştiren filtre sınıfı
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtUtil jwtUtil; // JWT işlemleri için yardımcı sınıf
     private final UserDetailsService userDetailsService; // Kullanıcı detaylarını yükleyen servis
@@ -45,6 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                logger.debug("JWT Token: {}", token);
+                logger.debug("User Role: {}", userDetails.getAuthorities());
             }
         }
         

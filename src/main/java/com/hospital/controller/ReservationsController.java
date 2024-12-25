@@ -21,26 +21,20 @@ import com.hospital.dto.Response.SpecialityResponse;
 import com.hospital.entity.Reservations;
 import com.hospital.mapper.ReservationsMapper;
 import com.hospital.service.ReservationsService;
-   
-
+import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/reservations")
+@RequestMapping("/reservation")
+@RequiredArgsConstructor
 public class ReservationsController {
     
     @Autowired
     private ReservationsService reservationsService;
 
-    
-
-    @PreAuthorize("hasRole('PATIENT')")
     @PostMapping("/create")
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservationRequest){
-        
-        Reservations savedReservation = reservationsService.createReservation(reservationRequest);
-        ReservationResponse response = ReservationsMapper.mapToResponse(savedReservation); // Dönüştürme metodu ekleyin
-        
-        return ResponseEntity.ok(response);
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<?> createReservation(@RequestBody ReservationRequest request) {
+        // Rezervasyon oluşturma işlemleri
     }
 
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
