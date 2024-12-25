@@ -49,7 +49,7 @@ public class ReservationsController {
         ReservationResponse response = reservationsService.getReservationById(id);
         return ResponseEntity.ok(response);
     }
-
+ 
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     @GetMapping("/getall")
     public ResponseEntity<List<ReservationResponse>> getAllReservations(){
