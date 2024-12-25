@@ -43,13 +43,10 @@ public class SecurityConfig {
             .requestMatchers("/auth/doctor/register").hasRole(Role.ADMIN.name())
             .requestMatchers("/auth/admin/register").hasRole(Role.ADMIN.name())
 
-            .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
+            .requestMatchers("/admin/**").hasAnyRole(Role.ADMIN.name(),Role.DOCTOR.name())
             .requestMatchers("/doctor/**").hasAnyRole(Role.ADMIN.name())
             .requestMatchers("/doctor/update/**").hasRole(Role.DOCTOR.name())
-            .requestMatchers("/doctor/get/**").hasRole(Role.DOCTOR.name())
             .requestMatchers("/patient/**").hasRole(Role.PATIENT.name())
-
-            .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
             .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
             .requestMatchers("/doctor/").hasAnyRole(Role.ADMIN.name())
             .requestMatchers("/doctor/update/").hasRole(Role.DOCTOR.name())
