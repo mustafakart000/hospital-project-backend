@@ -73,3 +73,7 @@ coverage/
 # Misc
 *.swp
 *.swo
+
+# Target classes
+target/classes/META-INF/spring-configuration-metadata.json
+target/classes/application.properties
