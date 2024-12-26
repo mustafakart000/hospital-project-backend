@@ -21,7 +21,6 @@ import com.hospital.dto.Response.SpecialityResponse;
 import com.hospital.entity.Reservations;
 import com.hospital.mapper.ReservationsMapper;
 import com.hospital.service.ReservationsService;
-   
 
 
 @RestController
@@ -49,8 +48,17 @@ public class ReservationsController {
         ReservationResponse response = reservationsService.getReservationById(id);
         return ResponseEntity.ok(response);
     }
+
  
-    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+
+
+
+
+
+
+ 
+    @PreAuthorize("hasAnyRole('DOCTOR')")
+
     @GetMapping("/getall")
     public ResponseEntity<List<ReservationResponse>> getAllReservations(){
         List<ReservationResponse> response = reservationsService.getAllReservations();
