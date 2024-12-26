@@ -17,4 +17,5 @@ public interface ReservationsRepository extends JpaRepository<Reservations, Long
 
     List<Reservations> findAllBySpeciality(DoctorSpeciality speciality);
     
+    List<Reservations> findAllByDoctorId(Long doctorId);
 }

@@ -62,10 +62,25 @@ public class SecurityConfig {
                         .requestMatchers("/medical-record/**").hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
                         .requestMatchers("/patient/").hasRole(Role.PATIENT.name())
 
+
+            .requestMatchers("/admin/**").hasAnyRole(Role.ADMIN.name(),Role.DOCTOR.name())
+            .requestMatchers("/doctor/**").hasAnyRole(Role.ADMIN.name())
+            .requestMatchers("/doctor/update/**").hasRole(Role.DOCTOR.name())
+            .requestMatchers("/patient/**").hasRole(Role.PATIENT.name())
+            .requestMatchers("/reservations/**").hasAnyRole(Role.DOCTOR.name(),Role.PATIENT.name())
+            .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
+            .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
+            .requestMatchers("/doctor/").hasAnyRole(Role.ADMIN.name())
+            .requestMatchers("/doctor/update/").hasRole(Role.DOCTOR.name())
+            .requestMatchers("/doctor/get/").hasRole(Role.DOCTOR.name())
+            .requestMatchers("/medical-record/**").hasAnyRole(Role.PATIENT.name(),Role.DOCTOR.name()  )
+            .requestMatchers("/patient/").hasRole(Role.PATIENT.name())
+
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
