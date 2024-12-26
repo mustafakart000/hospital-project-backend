@@ -102,5 +102,15 @@ public class ReservationsService {
     }
 
 
+                ;
+   
+
+    public List<ReservationResponse> getReservationsByDoctorId(Long doctorId) {
+        List<Reservations> reservations = reservationsRepository.findAllByDoctorId(doctorId);
+        return reservations.stream()
+                .map(ReservationsMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
 }
 

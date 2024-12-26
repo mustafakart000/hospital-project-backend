@@ -21,69 +21,76 @@ import com.hospital.dto.Response.SpecialityResponse;
 import com.hospital.entity.Reservations;
 import com.hospital.mapper.ReservationsMapper;
 import com.hospital.service.ReservationsService;
-   
-
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationsController {
-    
+
     @Autowired
     private ReservationsService reservationsService;
 
-    
-
-    @PreAuthorize("hasRole('PATIENT')")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     @PostMapping("/create")
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservationRequest){
-        
+    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservationRequest) {
+
         Reservations savedReservation = reservationsService.createReservation(reservationRequest);
         ReservationResponse response = ReservationsMapper.mapToResponse(savedReservation); // Dönüştürme metodu ekleyin
-        
+
         return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     @GetMapping("/get/{id}")
-    public ResponseEntity<ReservationResponse> getReservationById(@PathVariable Long id){
+    public ResponseEntity<ReservationResponse> getReservationById(@PathVariable Long id) {
         ReservationResponse response = reservationsService.getReservationById(id);
         return ResponseEntity.ok(response);
     }
- 
+
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     @GetMapping("/getall")
-    public ResponseEntity<List<ReservationResponse>> getAllReservations(){
+    public ResponseEntity<List<ReservationResponse>> getAllReservations() {
         List<ReservationResponse> response = reservationsService.getAllReservations();
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateReservation(@PathVariable Long id, @RequestBody ReservationRequest reservationRequest){
+    public ResponseEntity<String> updateReservation(@PathVariable Long id,
+            @RequestBody ReservationRequest reservationRequest) {
         reservationsService.updateReservation(id, reservationRequest);
         return ResponseEntity.accepted().body("başarılı bir şekilde güncellendi");
     }
+
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteReservation(@PathVariable Long id){
+    public ResponseEntity<String> deleteReservation(@PathVariable Long id) {
         reservationsService.deleteReservation(id);
         return ResponseEntity.accepted().body("başarılı bir şekilde silindi");
     }
+
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
-    //speciality için doktorları getir
+    // speciality için doktorları getir
     @GetMapping("/getall/doctors/{id}")
-    public ResponseEntity<List<DoctorResponseList>> getAllDoctorNameBySpeciality(@PathVariable Long id){
+    public ResponseEntity<List<DoctorResponseList>> getAllDoctorNameBySpeciality(@PathVariable Long id) {
         List<DoctorResponseList> response = reservationsService.getAllDoctorNameBySpeciality(id);
         return ResponseEntity.ok(response);
     }
-    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')") //getAllSpecialityByDoctorId
+
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')") // getAllSpecialityByDoctorId
     @GetMapping("/getall/speciality")
-    public ResponseEntity<List<SpecialityResponse>> getAllSpeciality(){
+    public ResponseEntity<List<SpecialityResponse>> getAllSpeciality() {
         List<SpecialityResponse> response = reservationsService.getAllSpeciality();
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    @GetMapping("/get/doctor/{doctorId}")
+    public ResponseEntity<List<ReservationResponse>> getReservationsByDoctorId(@PathVariable Long doctorId) {
+        List<ReservationResponse> reservations = reservationsService.getReservationsByDoctorId(doctorId);
+        return ResponseEntity.ok(reservations);
+    }
+
 }
-//bu sayfadaki tüm apileri yorum olarak yazabilirmisin ?
+// bu sayfadaki tüm apileri yorum olarak yazabilirmisin ?
 // localhost:8080/reservations/delete/1
 // localhost:8080/reservations/getall
 // localhost:8080/reservations/get/1
@@ -91,8 +98,3 @@ public class ReservationsController {
 // localhost:8080/reservations/create
 // localhost:8080/reservations/getall/speciality
 // localhost:8080/reservations/getall/doctors/1
-
-
-
-
-
