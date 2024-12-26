@@ -24,7 +24,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
-
 // Uygulamanın güvenlik yapılandırmasını sağlayan sınıf
 @Configuration
 @EnableWebSecurity
@@ -33,36 +32,41 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter)
+            throws Exception {
         // Güvenlik filtre zincirini yapılandırır
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/auth/login","/auth/doctor/login","/auth/admin/login", "/auth/register").permitAll()
-            .requestMatchers("/auth/doctor/register").hasRole(Role.ADMIN.name())
-            .requestMatchers("/auth/admin/register").hasRole(Role.ADMIN.name())
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/login", "/auth/doctor/login", "/auth/admin/login", "/auth/register")
+                        .permitAll()
+                        .requestMatchers("/auth/doctor/register").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/auth/admin/register").hasRole(Role.ADMIN.name())
 
-            .requestMatchers("/admin/**").hasAnyRole(Role.ADMIN.name(),Role.DOCTOR.name())
-            .requestMatchers("/doctor/**").hasAnyRole(Role.ADMIN.name())
-            .requestMatchers("/doctor/update/**").hasRole(Role.DOCTOR.name())
-            .requestMatchers("/patient/**").hasRole(Role.PATIENT.name())
-            .requestMatchers("/reservations/create").hasRole(Role.PATIENT.name())
-            .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
-            .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
-            .requestMatchers("/doctor/").hasAnyRole(Role.ADMIN.name())
-            .requestMatchers("/doctor/update/").hasRole(Role.DOCTOR.name())
-            .requestMatchers("/doctor/get/").hasRole(Role.DOCTOR.name())
-            .requestMatchers("/medical-record/**").hasAnyRole(Role.PATIENT.name(),Role.DOCTOR.name()  )
-            .requestMatchers("/patient/").hasRole(Role.PATIENT.name())
+                        .requestMatchers("/admin/**").hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name())
+                        .requestMatchers("/doctor/**").hasAnyRole(Role.ADMIN.name())
+                        .requestMatchers("/doctor/update/**").hasRole(Role.DOCTOR.name())
+                        .requestMatchers("/patient/**").hasRole(Role.PATIENT.name())
+                        .requestMatchers("/reservations/create").hasRole(Role.PATIENT.name())
+                        .requestMatchers("/reservations/get/{id}").hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
+                        .requestMatchers("/reservations/getall").hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name())
+                        .requestMatchers("/reservations/update/{id}")
+                            .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
+                        .requestMatchers("/reservations/delete/{id}")
+                            .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
+                        .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/doctor/").hasAnyRole(Role.ADMIN.name())
+                        .requestMatchers("/doctor/update/").hasRole(Role.DOCTOR.name())
+                        .requestMatchers("/doctor/get/").hasRole(Role.DOCTOR.name())
+                        .requestMatchers("/medical-record/**").hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
+                        .requestMatchers("/patient/").hasRole(Role.PATIENT.name())
 
-            .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-            
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -76,7 +80,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         // Kullanıcı detaylarını yükleyen bir servis sağlar
         return username -> userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Bean
@@ -101,7 +105,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         // source.registerCorsConfiguration("/", configuration);
         source.registerCorsConfiguration("/**", configuration);

@@ -31,16 +31,17 @@ public class ReservationsMapper {
         return reservation;
     }
     public static ReservationResponse mapToResponse(Reservations reservation){
+        
         return ReservationResponse.builder()
                 .id(reservation.getId())
-                .reservationDate(reservation.getReservationDate().toString())
-                .reservationTime(reservation.getReservationTime().toString())
+                .reservationDate(reservation.getReservationDate())
+                .reservationTime(reservation.getReservationTime())
                 .status(reservation.getStatus())
                 .speciality(reservation.getSpeciality().getDisplayName())
-                .doctorId(reservation.getDoctor().getId().toString())
+                .doctorId(reservation.getDoctor().getId())
                 .doctorName(reservation.getDoctor().getAd())
                 .doctorSurname(reservation.getDoctor().getSoyad())
-                .patientId(reservation.getPatient().getId().toString())
+                .patientId(reservation.getPatient().getId())
                 .patientName(reservation.getPatient().getAd())
                 .patientSurname(reservation.getPatient().getSoyad())
                 .build();

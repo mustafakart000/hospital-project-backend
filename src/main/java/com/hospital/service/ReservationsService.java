@@ -73,6 +73,7 @@ public class ReservationsService {
 
     
     public List<ReservationResponse> getAllReservations(){
+        
         return reservationsRepository.findAll().stream().map(ReservationsMapper::mapToResponse).collect(Collectors.toList());
     }
 
