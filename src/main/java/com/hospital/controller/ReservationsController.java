@@ -51,7 +51,12 @@ public class ReservationsController {
 
  
 
-
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    @GetMapping("/get/doctor/{doctorId}")
+    public ResponseEntity<List<ReservationResponse>> getReservationsByDoctorId(@PathVariable Long doctorId) {
+        List<ReservationResponse> reservations = reservationsService.getReservationsByDoctorId(doctorId);
+        return ResponseEntity.ok(reservations);
+    }
 
 
 
