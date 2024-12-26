@@ -10,8 +10,7 @@
     {
       "name": "application.security.jwt.expiration",
       "type": "java.lang.Long",
-      "sourceType": "com.example.config.JwtProperties",
-      "defaultValue": 0
+      "sourceType": "com.example.config.JwtProperties"
     },
     {
       "name": "application.security.jwt.secret-key",

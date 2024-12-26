@@ -50,7 +50,7 @@ public class ReservationsController {
         return ResponseEntity.ok(response);
     }
  
-    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
     @GetMapping("/getall")
     public ResponseEntity<List<ReservationResponse>> getAllReservations(){
         List<ReservationResponse> response = reservationsService.getAllReservations();
