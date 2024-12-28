@@ -48,6 +48,9 @@ public class AuthController {
     @PostMapping("/doctor/register")
     public ResponseEntity<String> addDoctorByAdmin(@Valid @RequestBody DoctorRegisterRequest request) {
         userService.registerDoctor(request);
+        //dublicate entry username
+       
+
         return ResponseEntity.status(HttpStatus.CREATED).body("Doktor başarıyla eklendi");
     }
 

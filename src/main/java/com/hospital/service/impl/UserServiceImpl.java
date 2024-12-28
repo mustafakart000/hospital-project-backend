@@ -1,7 +1,8 @@
 package com.hospital.service.impl;
 
 import java.time.LocalDate;
-
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,7 @@ import com.hospital.entity.User;
 import com.hospital.exception.EmailAlreadyExistsException;
 import com.hospital.exception.InvalidCredentialsException;
 import com.hospital.exception.UserAlreadyExistsException;
+import com.hospital.exception.UserValidationException;
 import com.hospital.model.Role;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.UserRepository;
@@ -188,19 +190,34 @@ public UserDetailsResponse getCurrentUserDetails(UserDetails userDetails) {
 @Override
 @PreAuthorize("hasRole('ADMIN')")
 public void registerDoctor(DoctorRegisterRequest request) {
-    if (userRepository.existsByTcKimlik(request.getTcKimlik())) {
-        throw new UserAlreadyExistsException("Bu kullanıcı adı zaten kullanılıyor" + request.getTcKimlik());
-    } else if (userRepository.existsByEmail(request.getEmail())) {
-        throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
-    }
-    if (userRepository.existsByTelefon(request.getTelefon())) {
-        throw new EmailAlreadyExistsException("Telefon already exists: " + request.getTelefon());
-    }
-    
+    validateUserUniqueness(request);
     Doctor doctor = DoctorMapper.mapToDoctor(request, passwordEncoder);
     userRepository.save(doctor);
 }
 
 
+
+
+
+public void validateUserUniqueness(DoctorRegisterRequest request) {
+    List<String> errors = new ArrayList<>();
+    
+    if (userRepository.existsByUsername(request.getUsername())) {
+        errors.add("Bu kullanıcı adı zaten kullanılıyor");
+    }
+    if (userRepository.existsByTcKimlik(request.getTcKimlik())) {
+        errors.add("Bu TC Kimlik numarası zaten kayıtlı");
+    }
+    if (userRepository.existsByEmail(request.getEmail())) {
+        errors.add("Bu email adresi zaten kullanılıyor");
+    }
+    if (userRepository.existsByTelefon(request.getTelefon())) {
+        errors.add("Bu telefon numarası zaten kayıtlı");
+    }
+    
+    if (!errors.isEmpty()) {
+        throw new UserValidationException(errors);
+    }
+}
 
 }
