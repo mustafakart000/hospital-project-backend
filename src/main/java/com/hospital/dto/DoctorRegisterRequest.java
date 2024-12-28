@@ -55,10 +55,9 @@ public class DoctorRegisterRequest {
     private String tcKimlik;
 
 
-    @NotBlank(message = "Doğum tarihi boş olamaz")
+   
 
     @NotNull(message = "Doğum tarihi boş olamaz")
-
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
