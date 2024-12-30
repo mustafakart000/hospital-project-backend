@@ -20,8 +20,6 @@ public class ReservationRequest {
     
     @NotBlank(message = "Doktor seçimi boş olamaz")
     private Doctor doctor;
-    private String date;
-    private String time;
     private String status;
     private String speciality;
     private Patient patient;

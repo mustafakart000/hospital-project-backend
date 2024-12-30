@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ import com.hospital.repository.DoctorSpecialityRepository;
 @Service
 public class ReservationsService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ReservationsService.class);
+
     @Autowired
     private ReservationsRepository reservationsRepository;
 
@@ -34,12 +38,16 @@ public class ReservationsService {
 
     
     public Reservations createReservation(ReservationRequest reservationRequest){
+        logger.info("Creating reservation for date: {} and time: {}", reservationRequest.getReservationDate(), reservationRequest.getReservationTime());
         //o tarih ve saatte randevu var mı kontrolü
         if(reservationsRepository.findByReservationDateAndReservationTime(reservationRequest.getReservationDate(), reservationRequest.getReservationTime()).isPresent()){
+            logger.warn("Reservation already exists for date: {} and time: {}", reservationRequest.getReservationDate(), reservationRequest.getReservationTime());
             throw new RuntimeException("Bu tarih ve saatte randevu zaten var");
         }
         Reservations reservation = ReservationsMapper.mapToEntity(reservationRequest);
-        return reservationsRepository.save(reservation);
+        Reservations savedReservation = reservationsRepository.save(reservation);
+        logger.info("Reservation created with ID: {}", savedReservation.getId());
+        return savedReservation;
     }
 
     public ReservationResponse getReservationById(Long id){

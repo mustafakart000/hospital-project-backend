@@ -1,27 +1,26 @@
 package com.hospital.mapper;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+
 
 import com.hospital.dto.ReservationRequest;
 import com.hospital.dto.Response.ReservationResponse;
 import com.hospital.entity.Reservations;
 import com.hospital.model.DoctorSpeciality;
 
-
 public class ReservationsMapper {
 
-    public static Reservations mapToEntity(ReservationRequest reservationRequest){
+    public static Reservations mapToEntity(ReservationRequest reservationRequest) {
         return Reservations.builder()
-                .reservationDate(LocalDate.parse(reservationRequest.getDate()))
-                .reservationTime(LocalTime.parse(reservationRequest.getTime()))
+                .reservationDate(reservationRequest.getReservationDate())
+                .reservationTime(reservationRequest.getReservationTime())
                 .status(reservationRequest.getStatus())
                 .speciality(DoctorSpeciality.getByDisplayName(reservationRequest.getSpeciality().trim()))
                 .doctor(reservationRequest.getDoctor())
                 .patient(reservationRequest.getPatient())
                 .build();
     }
-    public static Reservations mapToEntity(ReservationRequest reservationRequest, Reservations reservation){
+
+    public static Reservations mapToEntity(ReservationRequest reservationRequest, Reservations reservation) {
         reservation.setReservationDate(reservationRequest.getReservationDate());
         reservation.setReservationTime(reservationRequest.getReservationTime());
         reservation.setStatus(reservationRequest.getStatus());
@@ -30,8 +29,9 @@ public class ReservationsMapper {
         reservation.setPatient(reservationRequest.getPatient());
         return reservation;
     }
-    public static ReservationResponse mapToResponse(Reservations reservation){
-        
+
+    public static ReservationResponse mapToResponse(Reservations reservation) {
+
         return ReservationResponse.builder()
                 .id(reservation.getId())
                 .reservationDate(reservation.getReservationDate())

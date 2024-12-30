@@ -55,6 +55,7 @@ public class SecurityConfig {
                             .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
                         .requestMatchers("/reservations/delete/{id}")
                             .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
+                        .requestMatchers("/reservations/get/doctor/{doctorId}").hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
                         .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
                         .requestMatchers("/doctor/").hasAnyRole(Role.ADMIN.name())
                         .requestMatchers("/doctor/update/").hasRole(Role.DOCTOR.name())
