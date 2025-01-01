@@ -2,15 +2,17 @@ package com.hospital.mapper;
 
 import com.hospital.entity.Patient;
 import com.hospital.dto.Response.PatientResponse;
+import com.hospital.dto.PatientRequest;
 import com.hospital.dto.RegisterRequest;
 import com.hospital.dto.Response.MedicalRecordResponse;
 import java.util.stream.Collectors;
 import com.hospital.model.Role;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class PatientMapper {
 
+
+  
 
     public static Patient mapToPatient(RegisterRequest request, PasswordEncoder passwordEncoder) {
         Patient patient = new Patient();
@@ -40,7 +42,7 @@ public class PatientMapper {
             .username(patient.getUsername())
             .role(patient.getRole())
             .adres(patient.getAdres())
-            .birthDate(patient.getDogum_tarihi())
+            .birthDate(patient.getBirthDate())
             .kanGrubu(patient.getKanGrubu())
             .doctors(patient.getDoctors())
             .reservations(patient.getReservations())
@@ -57,5 +59,15 @@ public class PatientMapper {
                     .build())
                 .collect(Collectors.toList()))
             .build();
+    }
+
+    public static void mapToPatient(Patient patient, PatientRequest request) {
+        patient.setAd(request.getAd());
+        patient.setSoyad(request.getSoyad());
+        patient.setEmail(request.getEmail());
+        patient.setTelefon(request.getTelefon());
+        patient.setAdres(request.getAdres());
+        patient.setBirthDate(request.getDogumTarihi());
+        patient.setKanGrubu(request.getKanGrubu());
     }
 }

@@ -59,11 +59,14 @@ public class ReservationsController {
     }
 
 
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    @GetMapping("/get/patient/{patientId}")
+    public ResponseEntity<List<ReservationResponse>> getReservationsByPatientId(@PathVariable Long patientId) {
+        List<ReservationResponse> reservations = reservationsService.getReservationsByPatientId(patientId);
+        return ResponseEntity.ok(reservations);
+    }
 
-
- 
     @PreAuthorize("hasAnyRole('DOCTOR')")
-
     @GetMapping("/getall")
     public ResponseEntity<List<ReservationResponse>> getAllReservations(){
         List<ReservationResponse> response = reservationsService.getAllReservations();
@@ -75,6 +78,7 @@ public class ReservationsController {
         reservationsService.updateReservation(id, reservationRequest);
         return ResponseEntity.accepted().body("başarılı bir şekilde güncellendi");
     }
+
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteReservation(@PathVariable Long id){
@@ -94,6 +98,8 @@ public class ReservationsController {
         List<SpecialityResponse> response = reservationsService.getAllSpeciality();
         return ResponseEntity.ok(response);
     }
+    
+
 
 }
 //bu sayfadaki tüm apileri yorum olarak yazabilirmisin ?
