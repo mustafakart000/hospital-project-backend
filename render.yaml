@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: hospitalproject53
+    env: docker
+    buildCommand: "./mvnw clean install"
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://localhost:3306/hospital_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+      - key: SPRING_DATASOURCE_USERNAME
+        value: root
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: root
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+      - key: SPRING_JPA_SHOW_SQL
+        value: false
+      - key: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+        value: org.hibernate.dialect.MySQLDialect
+      - key: SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL
+        value: true
+      - key: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+        value: "10"
+      - key: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+        value: "5"
+      - key: SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT
+        value: "300000"
+      - key: APPLICATION_SECURITY_JWT_SECRET_KEY
+        value: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      - key: APPLICATION_SECURITY_JWT_EXPIRATION
+        value: "86400000"
+      - key: SPRING_MAIN_ALLOW_CIRCULAR_REFERENCES
+        value: true
+      - key: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK
+        value: DEBUG
+      - key: LOGGING_LEVEL_ORG_HIBERNATE_SQL
+        value: DEBUG
+      - key: LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL
+        value: TRACE
+      - key: LOGGING_LEVEL_ORG_HIBERNATE_TYPE
+        value: TRACE
