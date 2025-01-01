@@ -1,6 +1,5 @@
 package com.hospital.entity;
 
-import java.util.List;
 
 import com.hospital.model.Laboratuvar;
 
