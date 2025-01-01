@@ -62,7 +62,7 @@ public class SecurityConfig {
                         .requestMatchers("/doctor/update/").hasRole(Role.DOCTOR.name())
                         .requestMatchers("/doctor/get/").hasRole(Role.DOCTOR.name())
                         .requestMatchers("/medical-record/**").hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
-                        .requestMatchers("/patient/").hasRole(Role.PATIENT.name())
+                        .requestMatchers("/patient/**").hasAnyRole(Role.PATIENT.name(),Role.DOCTOR.name())
 
 
             .requestMatchers("/admin/**").hasAnyRole(Role.ADMIN.name(),Role.DOCTOR.name())
