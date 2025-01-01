@@ -43,7 +43,6 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/auth/doctor/register").hasRole(Role.ADMIN.name())
                         .requestMatchers("/auth/admin/register").hasRole(Role.ADMIN.name())
-
                         .requestMatchers("/admin/**").hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name())
                         .requestMatchers("/doctor/**").hasAnyRole(Role.ADMIN.name())
                         .requestMatchers("/doctor/update/**").hasRole(Role.DOCTOR.name())
@@ -52,35 +51,20 @@ public class SecurityConfig {
                         .requestMatchers("/reservations/get/{id}").hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
                         .requestMatchers("/reservations/getall").hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name())
                         .requestMatchers("/reservations/update/{id}")
-                            .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
+                        .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
                         .requestMatchers("/reservations/delete/{id}")
-                            .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
-                        .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
-                        .requestMatchers("/doctor/").hasAnyRole(Role.ADMIN.name())
-                        .requestMatchers("/doctor/update/").hasRole(Role.DOCTOR.name())
-                        .requestMatchers("/doctor/get/").hasRole(Role.DOCTOR.name())
+                        .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
+                        .requestMatchers("/doctor/diagnoses/**").hasRole(Role.DOCTOR.name())
+                        .requestMatchers("/doctor/diagnoses/create").hasRole(Role.DOCTOR.name())
+                        .requestMatchers("/doctor/diagnoses/update/{id}").hasRole(Role.DOCTOR.name())
+                        .requestMatchers("/doctor/diagnoses/delete/{id}").hasRole(Role.DOCTOR.name())
+                        .requestMatchers("/doctor/diagnoses/get/{id}").hasRole(Role.DOCTOR.name())
+                        .requestMatchers("/doctor/diagnoses/patient/get/{patientId}").hasRole(Role.DOCTOR.name())
                         .requestMatchers("/medical-record/**").hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
-                        .requestMatchers("/patient/").hasRole(Role.PATIENT.name())
-
-
-            .requestMatchers("/admin/**").hasAnyRole(Role.ADMIN.name(),Role.DOCTOR.name())
-            .requestMatchers("/doctor/**").hasAnyRole(Role.ADMIN.name())
-            .requestMatchers("/doctor/update/**").hasRole(Role.DOCTOR.name())
-            .requestMatchers("/patient/**").hasRole(Role.PATIENT.name())
-            .requestMatchers("/reservations/**").hasAnyRole(Role.DOCTOR.name(),Role.PATIENT.name())
-            .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
-            .requestMatchers("/admin/").hasRole(Role.ADMIN.name())
-            .requestMatchers("/doctor/").hasAnyRole(Role.ADMIN.name())
-            .requestMatchers("/doctor/update/").hasRole(Role.DOCTOR.name())
-            .requestMatchers("/doctor/get/").hasRole(Role.DOCTOR.name())
-            .requestMatchers("/medical-record/**").hasAnyRole(Role.PATIENT.name(),Role.DOCTOR.name()  )
-            .requestMatchers("/patient/").hasRole(Role.PATIENT.name())
-
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
 
         return http.build();
     }
@@ -126,4 +110,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+
 }

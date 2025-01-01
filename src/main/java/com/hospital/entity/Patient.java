@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hospital.dto.PatientTreatments.Entity.VitalBulgular;
+
 import java.util.List;
 
 @Entity
@@ -20,6 +22,10 @@ public class Patient extends User {
 
     @OneToMany(mappedBy = "patient")
     private List<MedicalRecord> medicalHistory; // MedicalRecord sınıfının listesi
+
+    @OneToMany(mappedBy = "patient")
+    private List<VitalBulgular> vitalBulgulars;
+    
 
     @ManyToMany
     private List<Doctor> doctors;

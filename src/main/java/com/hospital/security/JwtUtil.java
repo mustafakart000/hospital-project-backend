@@ -9,6 +9,8 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -32,7 +34,6 @@ public class JwtUtil {
     @PostConstruct
     public void init() {
         // Gizli anahtarı kullanarak bir Key oluşturur
-
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -53,12 +54,13 @@ public class JwtUtil {
     }
 
     private Claims extractClaims(String token) {
-
+        // Token'dan claims'ı çıkarır claims içinde kullanıcı adı ve token'ın süresi bulunur
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+                
     }
 
     public boolean validateToken(String token) {
@@ -78,5 +80,14 @@ public class JwtUtil {
     public String getUsernameFromToken(String token) {
         // Token'dan kullanıcı adını alır
         return extractUsername(token);
+    }
+    
+    public long getJwtExpiration() {
+        // JWT token'ın süresini döndürür
+        return jwtExpiration;
+    }
+
+    public static UserDetails getPrincipal() {
+        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

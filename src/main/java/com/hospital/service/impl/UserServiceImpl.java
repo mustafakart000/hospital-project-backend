@@ -220,4 +220,6 @@ public void validateUserUniqueness(DoctorRegisterRequest request) {
     }
 }
 
+
+
 }
