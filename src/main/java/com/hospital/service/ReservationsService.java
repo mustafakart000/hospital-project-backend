@@ -22,6 +22,7 @@ import com.hospital.model.DoctorSpeciality;
 import com.hospital.repository.ReservationsRepository;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.DoctorSpecialityRepository;
+
 @Service
 public class ReservationsService {
 
@@ -35,6 +36,8 @@ public class ReservationsService {
 
     @Autowired
     private DoctorRepository doctorRepository;
+
+
 
     
     public Reservations createReservation(ReservationRequest reservationRequest){
@@ -120,6 +123,15 @@ public class ReservationsService {
                 .map(ReservationsMapper::mapToResponse)
                 .collect(Collectors.toList());
     }
+
+    public List<ReservationResponse> getReservationsByPatientId(Long patientId) {
+        List<Reservations> reservations = reservationsRepository.findAllByPatientId(patientId);
+        return reservations.stream()
+                .map(ReservationsMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+   
 
 }
 

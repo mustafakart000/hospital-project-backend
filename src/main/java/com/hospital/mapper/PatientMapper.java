@@ -6,11 +6,12 @@ import com.hospital.dto.RegisterRequest;
 import com.hospital.dto.Response.MedicalRecordResponse;
 import java.util.stream.Collectors;
 import com.hospital.model.Role;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class PatientMapper {
 
+
+  
 
     public static Patient mapToPatient(RegisterRequest request, PasswordEncoder passwordEncoder) {
         Patient patient = new Patient();
