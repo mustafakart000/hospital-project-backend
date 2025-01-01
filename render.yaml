@@ -3,7 +3,6 @@ services:
     name: hospitalproject53
     env: docker
     buildCommand: "./mvnw clean install"
-    startCommand: "java -jar target/hospitalproject-0.0.1-SNAPSHOT.jar"
     dockerfilePath: Dockerfile
     envVars:
       - key: SPRING_DATASOURCE_URL
