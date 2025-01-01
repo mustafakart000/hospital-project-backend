@@ -29,3 +29,6 @@ EXPOSE 8080
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Set environment variable for active profile
+ENV SPRING_PROFILES_ACTIVE=prod
