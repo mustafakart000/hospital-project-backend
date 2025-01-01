@@ -23,5 +23,5 @@ public interface UserService {
 
     UserDetailsResponse getCurrentUserDetails(UserDetails userDetails);
     
-
+    
 } 

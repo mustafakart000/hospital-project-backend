@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hospital.dto.MedicalRecordRequest;
+import com.hospital.dto.PatientTreatments.request.VitalBulgularRequest;
 import com.hospital.dto.Response.MedicalRecordResponse;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.mapper.MedicalRecordMapper;
@@ -49,6 +50,14 @@ public class MedicalRecordController {
     public ResponseEntity<List<MedicalRecordResponse>> getMedicalRecordsByPatientId(@PathVariable Long patientId) {
         List<MedicalRecordResponse> responses = medicalRecordService.getMedicalRecordsByPatientId(patientId);
         return ResponseEntity.ok(responses);
+    }
+   
+    @PreAuthorize("hasAnyRole('DOCTOR')")
+    //localhost:8080/medical-record/create/appointment
+    @PostMapping("/create/appointment")
+    public ResponseEntity<String> createMedicalRecordByAppointmentId(@RequestBody VitalBulgularRequest vitalBulgularRequest){
+        medicalRecordService.createMedicalRecordByAppointmentId(vitalBulgularRequest);
+        return ResponseEntity.ok("Medical record created successfully");
     }
 
 
