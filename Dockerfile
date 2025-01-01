@@ -9,6 +9,9 @@ COPY .mvn/ .mvn
 COPY mvnw .
 COPY pom.xml .
 
+# Add execute permission for Maven Wrapper
+RUN chmod +x mvnw
+
 # Cache dependencies
 RUN ./mvnw dependency:resolve
 

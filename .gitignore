@@ -12,7 +12,9 @@ target/
 *.iws
 *.iml
 *.ipr
-
+# Maven Wrapper dosyalarını dahil et
+!mvnw
+!.mvn/
 # IDE - VS Code
 .vscode/
 .settings/
