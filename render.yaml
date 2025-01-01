@@ -1,12 +1,11 @@
 services:
   - type: web
     name: hospitalproject53
-    env: java
+    env: docker
     buildCommand: "./mvnw clean install"
     startCommand: "java -jar target/hospitalproject-0.0.1-SNAPSHOT.jar"
+    dockerfilePath: Dockerfile
     envVars:
-      - key: PORT
-        value: 8080
       - key: SPRING_DATASOURCE_URL
         value: jdbc:mysql://localhost:3306/hospital_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
       - key: SPRING_DATASOURCE_USERNAME
