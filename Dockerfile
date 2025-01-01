@@ -4,7 +4,21 @@ FROM eclipse-temurin:17-jdk-alpine
 # Set working directory
 WORKDIR /app
 
-# Copy application jar file
+# Copy Maven Wrapper and pom.xml
+COPY .mvn/ .mvn
+COPY mvnw .
+COPY pom.xml .
+
+# Cache dependencies
+RUN ./mvnw dependency:resolve
+
+# Copy the project files
+COPY src ./src
+
+# Build the project
+RUN ./mvnw package -DskipTests
+
+# Copy the built jar file to the container
 COPY target/hospital-management-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the application port
