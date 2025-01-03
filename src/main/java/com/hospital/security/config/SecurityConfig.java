@@ -39,31 +39,27 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/doctor/login", "/auth/admin/login", "/auth/register","http://localhost:3000/**")
-                        
+                        .requestMatchers("/auth/login", "/auth/doctor/login", "/auth/admin/login", "/auth/register",
+                                "http://localhost:3000/")
+
                         .permitAll()
                         .requestMatchers("/auth/doctor/register", "/auth/admin/register").hasRole(Role.ADMIN.name())
-
-                        .requestMatchers("/doctor/update/**", "/doctor/diagnoses/**", "/doctor/diagnoses/create",
-                                "/doctor/diagnoses/update/{id}",
-                                "/doctor/diagnoses/delete/{id}", "/doctor/diagnoses/get/{id}",
-                                "/doctor/diagnoses/patient/get/{patientId}")
-                        .hasRole(Role.DOCTOR.name())
-
-                        .requestMatchers("/patient/**", "/reservations/cancel/{id}", "/reservations/create")
-                        .hasRole(Role.PATIENT.name())
-
-                        .requestMatchers("/reservations/get/{id}").hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
-
-                        .requestMatchers("/reservations/getall", "/reservations/update/{id}",
-                                "/reservations/delete/{id}", "/reservations/get/doctor/{doctorId}")
+                        .requestMatchers("/auth/me", "/auth/allspecialties")
                         .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
 
-                        .requestMatchers("/medical-record/**").hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
+                        .requestMatchers("/patient/get/{id}", "/patient/update/{id}")
+                        .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
 
-                        .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/reservations/create").hasRole(Role.PATIENT.name())
+                        .requestMatchers("/reservations/get/{id}", "/reservations/get/doctor/{doctorId}",
+                                "/reservations/get/patient/{patientId}", "/reservations/delete/{id}")
+                        .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
+                        .requestMatchers("/reservations/getall").hasRole(Role.DOCTOR.name())
 
-                        .requestMatchers("/doctor/**").hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name())
+                        .requestMatchers("/medical-record/create", "/medical-record/get/{id}",
+                                "/medical-record/patient/{patientId}")
+                        .hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
+                        .requestMatchers("/medical-record/create/appointment").hasRole(Role.DOCTOR.name())
 
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
@@ -98,19 +94,15 @@ public class SecurityConfig {
         // Kimlik doğrulama yöneticisini sağlar
         return config.getAuthenticationManager();
     }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        // CORS yapılandırmasını sağlar
         CorsConfiguration configuration = new CorsConfiguration();
-        // configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://hospitalproject53.onrender.com"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://hospitalproject53.onrender.com"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // source.registerCorsConfiguration("/", configuration);
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
