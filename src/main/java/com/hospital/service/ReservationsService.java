@@ -3,6 +3,7 @@ package com.hospital.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,7 +132,12 @@ public class ReservationsService {
                 .collect(Collectors.toList());
     }
 
-   
+    public List<ReservationResponse> getReservationsByDate(LocalDate date) {
+        List<Reservations> reservations = reservationsRepository.findAllByReservationDate(date);
+        return reservations.stream()
+                .map(ReservationsMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
 
 }
 
