@@ -42,9 +42,6 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login", "/auth/doctor/login", "/auth/admin/login", "/auth/register",
                                 "http://localhost:3000/")
 
-                                "http://localhost:3000/**")
-
-
                         .permitAll()
                         .requestMatchers("/auth/doctor/register", "/auth/admin/register").hasRole(Role.ADMIN.name())
                         .requestMatchers("/auth/me", "/auth/allspecialties")
@@ -97,6 +94,7 @@ public class SecurityConfig {
         // Kimlik doğrulama yöneticisini sağlar
         return config.getAuthenticationManager();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
