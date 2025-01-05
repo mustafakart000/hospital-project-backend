@@ -44,7 +44,8 @@ public class ReservationsService {
     public Reservations createReservation(ReservationRequest reservationRequest){
         logger.info("Creating reservation for date: {} and time: {}", reservationRequest.getReservationDate(), reservationRequest.getReservationTime());
         //o tarih ve saatte randevu var mı kontrolü
-        if(reservationsRepository.findByReservationDateAndReservationTime(reservationRequest.getReservationDate(), reservationRequest.getReservationTime()).isPresent()){
+        Optional<Reservations> existingReservation = reservationsRepository.findByReservationDateAndReservationTime(reservationRequest.getReservationDate(), reservationRequest.getReservationTime());
+        if(existingReservation.isPresent() && !"CANCELLED".equals(existingReservation.get().getStatus())){
             logger.warn("Reservation already exists for date: {} and time: {}", reservationRequest.getReservationDate(), reservationRequest.getReservationTime());
             throw new RuntimeException("Bu tarih ve saatte randevu zaten var");
         }
