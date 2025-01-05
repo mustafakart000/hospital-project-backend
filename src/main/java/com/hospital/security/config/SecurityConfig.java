@@ -47,8 +47,9 @@ public class SecurityConfig {
                         .requestMatchers("/auth/me", "/auth/allspecialties")
                         .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
 
-                        .requestMatchers("/patient/get/{id}", "/patient/update/{id}")
-                        .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
+                        .requestMatchers("/patient/get/{id}", "/patient/update/{id}", "/patient/getall",
+                                "/patient/delete/{id}", "/patient/create")
+                        .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name(), Role.ADMIN.name())
 
                         .requestMatchers("/reservations/create").hasRole(Role.PATIENT.name())
                         .requestMatchers("/reservations/get/{id}", "/reservations/get/doctor/{doctorId}",
