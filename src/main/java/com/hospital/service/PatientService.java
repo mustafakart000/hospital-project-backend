@@ -1,5 +1,8 @@
 package com.hospital.service;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hospital.repository.PatientRepository;
@@ -30,6 +33,18 @@ public class PatientService {
             .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
         PatientMapper.mapToPatient(patient, request);
         patientRepository.save(patient);
+    }
+
+    public void deletePatient(Long id) {
+        if(patientRepository.existsById(id)){
+            patientRepository.deleteById(id);
+        }else{
+            throw new ResourceNotFoundException("Patient not found");
+        }
+    }
+
+    public Page<PatientResponse> getAllPatients(Pageable pageable) {
+        return patientRepository.findAll(pageable).map(PatientMapper::mapToPatientResponse);
     }
 
 }
