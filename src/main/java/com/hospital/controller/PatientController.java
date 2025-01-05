@@ -3,6 +3,7 @@ package com.hospital.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hospital.dto.AdminByPatientRequest;
 import com.hospital.dto.PatientRequest;
 import com.hospital.dto.Response.PatientResponse;
 import com.hospital.service.PatientService;
@@ -47,7 +48,13 @@ public class PatientController {
         return ResponseEntity.ok("Updated successfully");
     }
 
-   
+    // /admin/update/1
+    @PutMapping("/admin/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> updatePatientAdmin(@PathVariable Long id, @RequestBody AdminByPatientRequest request) {
+        patientService.updateByAdminPatient(id, request);
+        return ResponseEntity.ok("Updated successfully");
+    }
 
     
     // /patient/delete/1
