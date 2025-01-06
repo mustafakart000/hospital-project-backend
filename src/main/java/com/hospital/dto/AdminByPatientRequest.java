@@ -17,7 +17,7 @@ public class AdminByPatientRequest {
     private String email;
     private String telefon;
     private String adres;
-    private LocalDate dogumTarihi;
+    private LocalDate birthDate;
     private String kanGrubu;
     private String tcKimlik;
     private String password;

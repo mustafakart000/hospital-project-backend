@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/patient")
@@ -67,9 +68,11 @@ public class PatientController {
 
     // /patient/all
     @GetMapping("/getall")
-    @PreAuthorize("hasRole  ('ADMIN')")
-    public ResponseEntity<Page<PatientResponse>> getAllPatients(Pageable pageable) {
-        Page<PatientResponse> patients = patientService.getAllPatients(pageable);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<PatientResponse>> getAllPatients(
+            @RequestParam(required = false) String searchTerm,
+            Pageable pageable) {
+        Page<PatientResponse> patients = patientService.getAllPatients(searchTerm, pageable);
         return ResponseEntity.ok(patients);
     }
 
