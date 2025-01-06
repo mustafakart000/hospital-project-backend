@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.hospital.repository.PatientRepository;
 import com.hospital.dto.AdminByPatientRequest;
@@ -51,24 +52,34 @@ public class PatientService {
         }
     }
 
-    public Page<PatientResponse> getAllPatients(Pageable pageable) {
+    public Page<PatientResponse> getAllPatients(String searchTerm, Pageable pageable) {
+        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            return patientRepository
+                .findByAdContainingIgnoreCaseOrSoyadContainingIgnoreCaseOrEmailContainingIgnoreCaseOrTcKimlikContainingIgnoreCase(
+                    searchTerm, searchTerm, searchTerm, searchTerm, pageable)
+                .map(PatientMapper::mapToPatientResponse);
+        }
         return patientRepository.findAll(pageable).map(PatientMapper::mapToPatientResponse);
     }
 
     public void updateByAdminPatient(Long id, AdminByPatientRequest request) {
-        Patient patient = patientRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
-        patient.setAd(request.getAd() != null ? request.getAd() : patient.getAd());
-        patient.setSoyad(request.getSoyad() != null ? request.getSoyad() : patient.getSoyad());
-        patient.setEmail(request.getEmail() != null ? request.getEmail() : patient.getEmail());
-        patient.setTelefon(request.getTelefon() != null ? request.getTelefon() : patient.getTelefon());
-        patient.setAdres(request.getAdres() != null ? request.getAdres() : patient.getAdres());
-        patient.setBirthDate(request.getDogumTarihi() != null ? request.getDogumTarihi() : patient.getBirthDate());
-        patient.setKanGrubu(request.getKanGrubu() != null ? request.getKanGrubu() : patient.getKanGrubu());
-        patient.setTcKimlik(request.getTcKimlik() != null ? request.getTcKimlik() : patient.getTcKimlik());
-        patient.setPassword(request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : patient.getPassword());
-        patient.setUsername(request.getUsername() != null ? request.getUsername() : patient.getUsername());
-        patientRepository.save(patient);
+        try {
+            Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+            patient.setAd(request.getAd() != null ? request.getAd() : patient.getAd());
+            patient.setSoyad(request.getSoyad() != null ? request.getSoyad() : patient.getSoyad());
+            patient.setEmail(request.getEmail() != null ? request.getEmail() : patient.getEmail());
+            patient.setTelefon(request.getTelefon() != null ? request.getTelefon() : patient.getTelefon());
+            patient.setAdres(request.getAdres() != null ? request.getAdres() : patient.getAdres());
+            patient.setBirthDate(request.getBirthDate() != null ? request.getBirthDate() : patient.getBirthDate());
+            patient.setKanGrubu(request.getKanGrubu() != null ? request.getKanGrubu() : patient.getKanGrubu());
+            patient.setTcKimlik(request.getTcKimlik() != null ? request.getTcKimlik() : patient.getTcKimlik());
+            patient.setPassword(request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : patient.getPassword());
+            patient.setUsername(request.getUsername() != null ? request.getUsername() : patient.getUsername());
+            patientRepository.save(patient);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResourceNotFoundException("Bu email adresi zaten kullanılıyor. Lütfen başka bir email adresi giriniz.");
+        }
     }
 
 }
