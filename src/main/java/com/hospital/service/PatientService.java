@@ -5,8 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.hospital.repository.PatientRepository;
@@ -20,7 +19,7 @@ import com.hospital.entity.Patient;
 @Service
 public class PatientService {
     
-    private static final Logger logger = LoggerFactory.getLogger(PatientService.class);
+
 
     private final PatientRepository patientRepository;
     private final PasswordEncoder passwordEncoder;

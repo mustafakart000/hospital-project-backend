@@ -2,7 +2,6 @@ package com.hospital.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.hospital.dto.MedicalRecordRequest;
 import com.hospital.dto.UserDetailsResponse;
@@ -18,7 +17,6 @@ import com.hospital.repository.PatientRepository;
 import com.hospital.repository.VitalBulgularRepository;
 import com.hospital.security.JwtUtil;
 
-import io.jsonwebtoken.Jwts;
 
 import com.hospital.repository.DoctorRepository;
 import java.util.List;
