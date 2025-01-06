@@ -8,7 +8,6 @@ import com.hospital.dto.PatientRequest;
 import com.hospital.dto.Response.PatientResponse;
 import com.hospital.service.PatientService;
 
-import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
