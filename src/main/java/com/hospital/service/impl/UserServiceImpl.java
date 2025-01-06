@@ -125,7 +125,7 @@ public void register(RegisterRequest request) {
 @Override
 @PreAuthorize("hasRole('ADMIN')")
 public void registerAdmin(RegisterRequest request) {
-    if(userRepository.existsByTcKimlik(request.getTcKimlik())) {
+    if(userRepository.existsByUsername(request.getUsername())) {
         throw new UserAlreadyExistsException("Bu kullanıcı adı zaten kullanılıyor");
     }
     if (userRepository.existsByTelefon(request.getTelefon())) {
@@ -194,9 +194,6 @@ public void registerDoctor(DoctorRegisterRequest request) {
     Doctor doctor = DoctorMapper.mapToDoctor(request, passwordEncoder);
     userRepository.save(doctor);
 }
-
-
-
 
 
 public void validateUserUniqueness(DoctorRegisterRequest request) {
