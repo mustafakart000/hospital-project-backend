@@ -12,8 +12,8 @@ import jakarta.persistence.EnumType;
 import com.hospital.dto.PatientTreatments.Entity.VitalBulgular;
 import com.hospital.model.DoctorSpeciality;
 
-
 import java.util.List;
+
 
 @Entity
 @Data

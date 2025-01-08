@@ -33,11 +33,21 @@ public class PrescriptionController {
     public ResponseEntity<List<ResponseBuilder>> getPatientPrescriptions(@PathVariable String patientId) {
         return ResponseEntity.ok(prescriptionService.getPrescriptionsByPatientId(patientId));
     }
+    
     // patient reçetelerini getirmek için
     @GetMapping("/patient")
     @PreAuthorize("hasAnyRole('PATIENT')")
     public ResponseEntity<List<ResponseBuilder>> getPatientPrescriptions() {
-        
+
         return ResponseEntity.ok(prescriptionService.getPrescriptionsByPatientId());
     }
+
+
+
+@GetMapping("/doctor/{doctorId}")
+@PreAuthorize("hasRole('DOCTOR')")
+public ResponseEntity<List<ResponseBuilder>> getPrescriptionsByDoctorId(@PathVariable String doctorId) {
+    return ResponseEntity.ok(prescriptionService.getPrescriptionsByDoctorId(doctorId));
+}
+
 } 

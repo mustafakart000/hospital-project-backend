@@ -24,6 +24,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Entity
 @Table(name = "reservations")
 @Data
@@ -70,6 +71,7 @@ public class Reservations {
 
     @OneToOne
     @JoinColumn(name = "diagnosis_id")
+    @JsonIgnore
     private DiagnosisEntity diagnosis;
     
 

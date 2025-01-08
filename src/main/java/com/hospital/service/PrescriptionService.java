@@ -80,4 +80,11 @@ public class PrescriptionService {
             .map(PrescriptionMapper::toDto)
             .collect(Collectors.toList());
     }
+
+
+    public List<ResponseBuilder> getPrescriptionsByDoctorId(String doctorId) {
+        return prescriptionRepository.findByDoctorId(doctorId).stream()
+            .map(PrescriptionMapper::toDto)
+            .collect(Collectors.toList());
+    }
 } 
