@@ -19,12 +19,6 @@ import com.hospital.entity.Patient;
 @Service
 public class PatientService {
     
-
-    @Autowired
-    private PatientRepository patientRepository;
-
-
-
     private final PatientRepository patientRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -47,7 +41,7 @@ public class PatientService {
         patientRepository.save(patient);
     }
     
-}
+
 
     public void deletePatient(Long id) {
         if(patientRepository.existsById(id)){
