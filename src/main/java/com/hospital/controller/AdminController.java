@@ -54,7 +54,7 @@ public class AdminController {
     }
     //localhost:8080/doctor/get/1
     @GetMapping("/doctor/get/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','PATIENT')")
     public GetFullDoctorResponse getDoctor(@PathVariable Long id) {
         return doctorService.getDoctorById(id);
     }

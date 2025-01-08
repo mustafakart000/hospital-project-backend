@@ -47,6 +47,8 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers("/auth/doctor/register", "/auth/admin/register")
                                                 .hasRole(Role.ADMIN.name())
+                                                .requestMatchers("/technician/**").hasAnyRole(Role.DOCTOR.name(),Role.ADMIN.name(),Role.TECHNICIAN.name())
+                                                .requestMatchers("/imaging-requests/create").hasAnyRole(Role.PATIENT.name(),Role.DOCTOR.name())
                                                 .requestMatchers("/auth/me", "/auth/allspecialties")
                                                 .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
                                                 .requestMatchers("/doctor/diagnoses/create").hasRole(Role.DOCTOR.name())
@@ -59,6 +61,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/prescription/get/{id}").hasRole(Role.DOCTOR.name())
                                                 .requestMatchers("/prescription/get/patient").hasRole(Role.PATIENT.name())
                                                 .requestMatchers("/prescription/get/patient/{patientId}").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/prescription/**").hasRole(Role.DOCTOR.name())
                                                 .requestMatchers("/reservations/create").hasRole(Role.PATIENT.name())
                                                 .requestMatchers("/reservations/get/{id}",
                                                                 "/reservations/get/doctor/{doctorId}",

@@ -32,6 +32,7 @@ public class PatientMapper {
 
 
     public static PatientResponse mapToPatientResponse(Patient patient) {
+        System.out.println("Patient: " + patient.getDoctors());
         return PatientResponse.builder()
             .id(patient.getId())
             .tcKimlik(patient.getTcKimlik())
@@ -59,6 +60,7 @@ public class PatientMapper {
                     .build())
                 .collect(Collectors.toList()))
             .build();
+            
     }
 
     public static void mapToPatient(Patient patient, PatientRequest request) {
