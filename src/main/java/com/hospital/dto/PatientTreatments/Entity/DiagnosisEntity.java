@@ -1,4 +1,4 @@
-package com.hospital.entity;
+package com.hospital.dto.PatientTreatments.Entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +15,10 @@ import lombok.Data;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import com.hospital.entity.Reservations;
+
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "diagnoses")
@@ -26,6 +30,10 @@ public class DiagnosisEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "reservation_id")
+    private Reservations reservation;
     
     private String preliminaryDiagnosis;
     private String finalDiagnosis;
@@ -36,7 +44,9 @@ public class DiagnosisEntity {
     private TreatmentType treatmentType;
     private String treatmentDetails;
     private LocalDate followUpDate;
-    
+   
+
+
     private String patientId;
     private String doctorId;
     private LocalDateTime createdAt;

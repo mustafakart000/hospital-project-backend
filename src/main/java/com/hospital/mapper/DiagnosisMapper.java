@@ -2,8 +2,10 @@ package com.hospital.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.hospital.dto.PatientTreatments.Entity.DiagnosisRequest;
-import com.hospital.entity.DiagnosisEntity;
+import com.hospital.dto.PatientTreatments.Entity.DiagnosisEntity;
+import com.hospital.dto.PatientTreatments.request.DiagnosisRequest;
+import com.hospital.entity.Reservations;
+
 import lombok.RequiredArgsConstructor;
 
 
@@ -11,11 +13,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DiagnosisMapper {
     
-    public DiagnosisEntity toEntity(DiagnosisRequest request) {
+    public DiagnosisEntity toEntity(DiagnosisRequest request, Reservations reservation) {
         if (request == null) {
             return null;
         }
-
+        
         return DiagnosisEntity.builder()
             .preliminaryDiagnosis(request.getDiagnosticInfo().getPreliminaryDiagnosis())
             .finalDiagnosis(request.getDiagnosticInfo().getFinalDiagnosis())
@@ -28,6 +30,7 @@ public class DiagnosisMapper {
             .doctorId(request.getMetadata().getDoctorId())
             .createdAt(request.getMetadata().getCreatedAt())
             .updatedAt(request.getMetadata().getUpdatedAt())
+            .reservation(reservation)
             .build();
             //postman: http://localhost:8080/doctor/diagnoses/create
             //{diagnosticInfo: {preliminaryDiagnosis: "string", finalDiagnosis: "string", diagnosticDetails: "string", icdCode: "string"}, treatmentPlan: {treatmentType: "string", treatmentDetails: "string", followUpDate: "string"}}
@@ -41,6 +44,7 @@ public class DiagnosisMapper {
         }
 
         return DiagnosisRequest.builder()
+            .reservationId(entity.getReservation().getId())
             .diagnosticInfo(DiagnosisRequest.DiagnosticInfo.builder()
                 .preliminaryDiagnosis(entity.getPreliminaryDiagnosis())
                 .finalDiagnosis(entity.getFinalDiagnosis())

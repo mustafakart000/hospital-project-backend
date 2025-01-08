@@ -21,5 +21,6 @@ public interface ReservationsRepository extends JpaRepository<Reservations, Long
 
     List<Reservations> findAllByPatientId(Long patientId);
 
-    List<Reservations> findAllByReservationDate(LocalDate date);
+    List<Reservations> findAllByReservationDateAndIsTreatedFalse(LocalDate date);
+    List<Reservations> findAllByReservationDateAndIsTreatedTrue(LocalDate date);
 }

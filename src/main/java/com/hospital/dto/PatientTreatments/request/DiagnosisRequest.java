@@ -1,5 +1,5 @@
 
-package com.hospital.dto.PatientTreatments.Entity;
+package com.hospital.dto.PatientTreatments.request;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ public class DiagnosisRequest {
     private TreatmentPlan treatmentPlan;
     private Actions actions;
     private Metadata metadata;
-
+    private long reservationId;
     @Data
     @Builder
     @NoArgsConstructor
@@ -40,6 +40,7 @@ public class DiagnosisRequest {
         private TreatmentType treatmentType;
         private String treatmentDetails;
         private LocalDate followUpDate;
+        
     }
 
     @Data
@@ -62,4 +63,6 @@ public class DiagnosisRequest {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }
+
+   
 }

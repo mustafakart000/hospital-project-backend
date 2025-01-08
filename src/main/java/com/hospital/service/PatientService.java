@@ -4,10 +4,9 @@ package com.hospital.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.dao.DataIntegrityViolationException;
-
 import com.hospital.repository.PatientRepository;
 import com.hospital.dto.AdminByPatientRequest;
 import com.hospital.dto.PatientRequest;
@@ -16,9 +15,14 @@ import com.hospital.exception.ResourceNotFoundException;
 import com.hospital.mapper.PatientMapper;
 import com.hospital.entity.Patient;
 
+
 @Service
 public class PatientService {
     
+
+    @Autowired
+    private PatientRepository patientRepository;
+
 
 
     private final PatientRepository patientRepository;
@@ -42,6 +46,8 @@ public class PatientService {
         PatientMapper.mapToPatient(patient, request);
         patientRepository.save(patient);
     }
+    
+}
 
     public void deletePatient(Long id) {
         if(patientRepository.existsById(id)){
@@ -82,3 +88,4 @@ public class PatientService {
     }
 
 }
+

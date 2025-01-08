@@ -100,6 +100,20 @@ public class ReservationsController {
     }
     
 
+    @PreAuthorize("hasRole('DOCTOR')")
+    @GetMapping("/get/today")
+    public ResponseEntity<List<ReservationResponse>> getTodayReservationsForDoctor() {
+        LocalDate today = LocalDate.now();
+        List<ReservationResponse> reservations = reservationsService.getReservationsByDate(today);
+        return ResponseEntity.ok(reservations);
+    }
+    @PreAuthorize("hasRole('DOCTOR')")
+    @GetMapping("/get/today/treated")
+    public ResponseEntity<List<ReservationResponse>> getTodayTreatedReservationsForDoctor() {
+        LocalDate today = LocalDate.now();
+        List<ReservationResponse> reservations = reservationsService.getTreatedReservationsByDate(today);
+        return ResponseEntity.ok(reservations);
+    }
 
 }
 //bu sayfadaki tüm apileri yorum olarak yazabilirmisin ?
