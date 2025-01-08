@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-
-import com.hospital.dto.PatientTreatments.Entity.DiagnosisRequest;
+import com.hospital.dto.PatientTreatments.request.DiagnosisRequest;
 import com.hospital.service.DiagnosisService;
 
 import lombok.RequiredArgsConstructor;
@@ -55,6 +54,8 @@ public class DiagnosisController {
         diagnosisService.deleteDiagnosis(id);
         return ResponseEntity.noContent().build();
     }
+
+   
 }
 // localhost:8080/doctor/diagnoses/create
 // {

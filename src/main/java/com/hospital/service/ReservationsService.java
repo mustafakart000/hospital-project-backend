@@ -132,12 +132,19 @@ public class ReservationsService {
                 .collect(Collectors.toList());
     }
 
-    public List<ReservationResponse> getReservationsByDate(LocalDate date) {
-        List<Reservations> reservations = reservationsRepository.findAllByReservationDate(date);
-        return reservations.stream()
-                .map(ReservationsMapper::mapToResponse)
-                .collect(Collectors.toList());
-    }
+        public List<ReservationResponse> getReservationsByDate(LocalDate date) {
+            List<Reservations> reservations = reservationsRepository.findAllByReservationDateAndIsTreatedFalse(date);
+            return reservations.stream()
+                    .map(ReservationsMapper::mapToResponse)
+                    .collect(Collectors.toList());
+        }
+
+        public List<ReservationResponse> getTreatedReservationsByDate(LocalDate date) {
+            List<Reservations> reservations = reservationsRepository.findAllByReservationDateAndIsTreatedTrue(date);
+            return reservations.stream()
+                    .map(ReservationsMapper::mapToResponse)
+                    .collect(Collectors.toList());
+        }
 
 }
 

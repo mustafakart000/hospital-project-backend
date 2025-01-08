@@ -1,6 +1,8 @@
 package com.hospital.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -9,6 +11,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hospital.dto.PatientTreatments.Entity.VitalBulgular;
+
 
 import java.util.List;
 
@@ -33,4 +36,7 @@ public class Patient extends User {
     @OneToMany(mappedBy = "patient")
     @JsonIgnore
     private List<Reservations> reservations;
+
+    
+    
 }

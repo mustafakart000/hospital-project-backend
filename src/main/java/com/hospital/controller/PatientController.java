@@ -41,6 +41,8 @@ public class PatientController {
         patientService.updatePatient(id, request);
         return ResponseEntity.ok("Updated successfully");
     }
+
+   
  
 
 

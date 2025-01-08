@@ -4,8 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import com.hospital.model.DoctorSpeciality;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hospital.dto.PatientTreatments.Entity.DiagnosisEntity;
+import com.hospital.model.DoctorSpeciality;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +17,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,4 +61,16 @@ public class Reservations {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "is_treated")
+    private boolean isTreated;
+
+    @Column(name = "treatment_date")
+    private LocalDateTime treatmentDate;
+
+    @OneToOne
+    @JoinColumn(name = "diagnosis_id")
+    private DiagnosisEntity diagnosis;
+    
+
 }
