@@ -1,7 +1,6 @@
 package com.hospital.controller;
 
 import java.util.List;
-import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -100,6 +99,7 @@ public class ReservationsController {
         return ResponseEntity.ok(response);
     }
     
+
     @PreAuthorize("hasRole('DOCTOR')")
     @GetMapping("/get/today")
     public ResponseEntity<List<ReservationResponse>> getTodayReservationsForDoctor() {
@@ -114,6 +114,7 @@ public class ReservationsController {
         List<ReservationResponse> reservations = reservationsService.getTreatedReservationsByDate(today);
         return ResponseEntity.ok(reservations);
     }
+
 }
 //bu sayfadaki tüm apileri yorum olarak yazabilirmisin ?
 // localhost:8080/reservations/delete/1

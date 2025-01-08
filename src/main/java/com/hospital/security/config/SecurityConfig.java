@@ -31,6 +31,7 @@ import java.util.Arrays;
 
 public class SecurityConfig {
 
+
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter)
                         throws Exception {
@@ -119,5 +120,84 @@ public class SecurityConfig {
                 source.registerCorsConfiguration("/**", configuration);
                 return source;
         }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter)
+            throws Exception {
+        // Güvenlik filtre zincirini yapılandırır
+        http
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/login", "/auth/doctor/login", "/auth/admin/login", "/auth/register",
+                                "http://localhost:3000/")
+
+                        .permitAll()
+                        .requestMatchers("/auth/doctor/register", "/auth/admin/register").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/auth/me", "/auth/allspecialties")
+                        .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
+
+                        .requestMatchers("/patient/get/{id}", "/patient/update/{id}", "/patient/getall",
+                                "/patient/delete/{id}", "/patient/create", "/patient/admin/update/{id}")
+                        .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name(), Role.ADMIN.name())
+
+                        .requestMatchers("/reservations/create").hasRole(Role.PATIENT.name())
+                        .requestMatchers("/reservations/get/{id}", "/reservations/get/doctor/{doctorId}",
+                                "/reservations/get/patient/{patientId}", "/reservations/delete/{id}")
+                        .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
+                        .requestMatchers("/reservations/getall").hasRole(Role.DOCTOR.name())
+
+                        .requestMatchers("/medical-record/create", "/medical-record/get/{id}",
+                                "/medical-record/patient/{patientId}")
+                        .hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
+                        .requestMatchers("/medical-record/create/appointment").hasRole(Role.DOCTOR.name())
+
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter(UserDetailsService userDetailsService, JwtUtil jwtUtil) {
+        // JWT doğrulama filtresini oluşturur
+        return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        // Kullanıcı detaylarını yükleyen bir servis sağlar
+        return username -> userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // Şifreleme için bir PasswordEncoder sağlar
+
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        // Kimlik doğrulama yöneticisini sağlar
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://hospitalproject53.onrender.com"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 
 }

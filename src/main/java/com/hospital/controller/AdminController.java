@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.hospital.dto.AdminByAdminRequest;
 import com.hospital.dto.DoctorRequest;
 import com.hospital.dto.Response.AdminResponseList;
 import com.hospital.dto.Response.DoctorResponseList;
@@ -79,4 +80,12 @@ public class AdminController {
         AdminResponseList admin = adminService.getAdminById(id);
         return ResponseEntity.ok(admin);
     }
+
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> updateAdmin(@PathVariable Long id, @RequestBody AdminByAdminRequest request) {
+        adminService.updateAdmin(id, request);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+   
 }

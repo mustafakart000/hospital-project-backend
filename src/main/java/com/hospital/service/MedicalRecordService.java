@@ -20,6 +20,9 @@ import com.hospital.repository.MedicalRecordRepository;
 import com.hospital.repository.PatientRepository;
 import com.hospital.repository.VitalBulgularRepository;
 import com.hospital.security.JwtUtil;
+import com.hospital.repository.DoctorRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicalRecordService {

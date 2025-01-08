@@ -19,4 +19,7 @@ public class PatientRequest {
     private String adres;
     private LocalDate dogumTarihi;
     private String kanGrubu;
+    private String tcKimlik;
+    private String password;
+    private String username;
 }

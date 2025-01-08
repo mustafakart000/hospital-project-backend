@@ -26,7 +26,7 @@ public class DiagnosisController {
     private final DiagnosisService diagnosisService;
     
     @PostMapping("/create")
-    
+        
     public ResponseEntity<DiagnosisRequest> createDiagnosis(@RequestBody DiagnosisRequest request) {
         
         return ResponseEntity.ok(diagnosisService.createDiagnosis(request));
