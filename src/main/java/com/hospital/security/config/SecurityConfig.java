@@ -32,6 +32,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
 
+
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter)
                         throws Exception {
@@ -111,8 +112,9 @@ public class SecurityConfig {
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
                 configuration.setAllowedOrigins(
-                                Arrays.asList("http://localhost:3000", "https://hospitalproject53.onrender.com"));
+                                Arrays.asList("http://localhost:3000"));
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedOrigins(Arrays.asList("http://44.204.9.176"));
                 configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
                 configuration.setExposedHeaders(Arrays.asList("Authorization"));
 
@@ -128,6 +130,7 @@ public class SecurityConfig {
     
 
   
+
 
 
 }
