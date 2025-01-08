@@ -1,5 +1,8 @@
 package com.hospital.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +15,11 @@ import com.hospital.entity.Doctor;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.entity.Patient;
 import com.hospital.mapper.MedicalRecordMapper;
+import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.MedicalRecordRepository;
 import com.hospital.repository.PatientRepository;
 import com.hospital.repository.VitalBulgularRepository;
 import com.hospital.security.JwtUtil;
-
-
 import com.hospital.repository.DoctorRepository;
 import java.util.List;
 import java.util.stream.Collectors;

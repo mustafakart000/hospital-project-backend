@@ -5,14 +5,15 @@ import org.springframework.stereotype.Service;
 import com.hospital.service.DiagnosisService;
 import com.hospital.repository.DiagnosisRepository;
 import com.hospital.mapper.DiagnosisMapper;
-import com.hospital.dto.PatientTreatments.Entity.DiagnosisRequest;
-import com.hospital.entity.DiagnosisEntity;
+import com.hospital.dto.PatientTreatments.Entity.DiagnosisEntity;
+import com.hospital.dto.PatientTreatments.request.DiagnosisRequest;
+import com.hospital.entity.Reservations;
 import com.hospital.exception.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-
+import com.hospital.repository.ReservationsRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -20,18 +21,25 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
     private final DiagnosisRepository diagnosisRepository;
     private final DiagnosisMapper diagnosisMapper;
-
+    private final ReservationsRepository reservationsRepository;
     @Override
     public DiagnosisRequest createDiagnosis(DiagnosisRequest request) {
         // Set creation time
         request.getMetadata().setCreatedAt(LocalDateTime.now());
         request.getMetadata().setUpdatedAt(LocalDateTime.now());
-
+        Reservations reservation = reservationsRepository.findById(request.getReservationId())
+        .orElseThrow(() -> new NotFoundException("Reservation not found with id: " + request.getReservationId()));
         // Convert to entity
-        DiagnosisEntity entity = diagnosisMapper.toEntity(request);
+        DiagnosisEntity entity = diagnosisMapper.toEntity(request, reservation);
         
         // Save to database
         DiagnosisEntity savedEntity = diagnosisRepository.save(entity);
+        
+        // Rezervasyonu güncelle
+        reservation.setDiagnosis(savedEntity);
+        reservation.setTreatmentDate(LocalDateTime.now());
+        reservation.setTreated(true);
+        reservationsRepository.save(reservation);
         
         // Handle consultation request if needed
         if (request.getActions().isRequestConsultation()) {
@@ -71,9 +79,10 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         // Update metadata
         request.getMetadata().setCreatedAt(existingEntity.getCreatedAt());
         request.getMetadata().setUpdatedAt(LocalDateTime.now());
-        
+        Reservations reservation = reservationsRepository.findById(request.getReservationId())   
+        .orElseThrow(() -> new NotFoundException("Reservation not found with id: " + request.getReservationId()));
         // Map and save
-        DiagnosisEntity entityToUpdate = diagnosisMapper.toEntity(request);
+        DiagnosisEntity entityToUpdate = diagnosisMapper.toEntity(request, reservation);
         entityToUpdate.setId(id);
         DiagnosisEntity updatedEntity = diagnosisRepository.save(entityToUpdate);
         
@@ -98,4 +107,6 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         // Implement appointment creation logic
         // This could involve integration with an appointment scheduling system
     }
+
+    
 }

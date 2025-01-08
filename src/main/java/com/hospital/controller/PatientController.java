@@ -48,6 +48,7 @@ public class PatientController {
         return ResponseEntity.ok("Updated successfully");
     }
 
+
     // /admin/update/1
     @PutMapping("/admin/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -74,6 +75,7 @@ public class PatientController {
         Page<PatientResponse> patients = patientService.getAllPatients(searchTerm, pageable);
         return ResponseEntity.ok(patients);
     }
+
 
 
 

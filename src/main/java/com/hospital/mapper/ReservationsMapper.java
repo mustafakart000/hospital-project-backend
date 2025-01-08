@@ -44,6 +44,8 @@ public class ReservationsMapper {
                 .patientId(reservation.getPatient().getId())
                 .patientName(reservation.getPatient().getAd())
                 .patientSurname(reservation.getPatient().getSoyad())
+                .isTreated(reservation.isTreated())
+                .treatmentDate(reservation.getTreatmentDate())
                 .build();
     }
 }

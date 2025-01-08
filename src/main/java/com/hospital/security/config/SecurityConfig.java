@@ -31,83 +31,106 @@ import java.util.Arrays;
 
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter)
-            throws Exception {
-        // Güvenlik filtre zincirini yapılandırır
-        http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/doctor/login", "/auth/admin/login", "/auth/register",
-                                "http://localhost:3000/")
 
-                        .permitAll()
-                        .requestMatchers("/auth/doctor/register", "/auth/admin/register").hasRole(Role.ADMIN.name())
-                        .requestMatchers("/auth/me", "/auth/allspecialties")
-                        .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
 
-                        .requestMatchers("/patient/get/{id}", "/patient/update/{id}", "/patient/getall",
-                                "/patient/delete/{id}", "/patient/create", "/patient/admin/update/{id}")
-                        .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name(), Role.ADMIN.name())
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter)
+                        throws Exception {
+                // Güvenlik filtre zincirini yapılandırır
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/auth/login", "/auth/doctor/login",
+                                                                "/auth/admin/login", "/auth/register",
+                                                                "http://localhost:3000/**")
 
-                        .requestMatchers("/reservations/create").hasRole(Role.PATIENT.name())
-                        .requestMatchers("/reservations/get/{id}", "/reservations/get/doctor/{doctorId}",
-                                "/reservations/get/patient/{patientId}", "/reservations/delete/{id}")
-                        .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
-                        .requestMatchers("/reservations/getall").hasRole(Role.DOCTOR.name())
+                                                .permitAll()
+                                                .requestMatchers("/auth/doctor/register", "/auth/admin/register")
+                                                .hasRole(Role.ADMIN.name())
+                                                .requestMatchers("/auth/me", "/auth/allspecialties")
+                                                .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
+                                                .requestMatchers("/doctor/diagnoses/create").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/patient/get/{id}", "/patient/update/{id}")
+                                                .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
+                                                .requestMatchers("/medicine/get/{id}", "/medicine/createAll",
+                                                                "/medicine/getAllByDoctorSpeciality/**")
+                                                .hasAnyRole(Role.DOCTOR.name(), Role.ADMIN.name())
+                                                .requestMatchers("/prescription/create").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/prescription/get/{id}").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/prescription/get/patient").hasRole(Role.PATIENT.name())
+                                                .requestMatchers("/prescription/get/patient/{patientId}").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/reservations/create").hasRole(Role.PATIENT.name())
+                                                .requestMatchers("/reservations/get/{id}",
+                                                                "/reservations/get/doctor/{doctorId}",
+                                                                "/reservations/get/patient/{patientId}",
+                                                                "/reservations/delete/{id}")
+                                                .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
+                                                .requestMatchers("/reservations/getall").hasRole(Role.DOCTOR.name())
 
-                        .requestMatchers("/medical-record/create", "/medical-record/get/{id}",
-                                "/medical-record/patient/{patientId}")
-                        .hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
-                        .requestMatchers("/medical-record/create/appointment").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/medical-record/create", "/medical-record/get/{id}",
+                                                                "/medical-record/patient/{patientId}")
+                                                .hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
+                                                .requestMatchers("/medical-record/create/appointment")
+                                                .hasRole(Role.DOCTOR.name())
 
-                        .anyRequest().authenticated())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                                                .anyRequest().authenticated())
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+                return http.build();
+        }
 
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(UserDetailsService userDetailsService, JwtUtil jwtUtil) {
-        // JWT doğrulama filtresini oluşturur
-        return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
-    }
+        @Bean
+        public JwtAuthenticationFilter jwtAuthenticationFilter(UserDetailsService userDetailsService, JwtUtil jwtUtil) {
+                // JWT doğrulama filtresini oluşturur
+                return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+        }
 
-    @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository) {
-        // Kullanıcı detaylarını yükleyen bir servis sağlar
-        return username -> userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
+        @Bean
+        public UserDetailsService userDetailsService(UserRepository userRepository) {
+                // Kullanıcı detaylarını yükleyen bir servis sağlar
+                return username -> userRepository.findByUsername(username)
+                                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        // Şifreleme için bir PasswordEncoder sağlar
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                // Şifreleme için bir PasswordEncoder sağlar
 
-        return new BCryptPasswordEncoder();
-    }
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        // Kimlik doğrulama yöneticisini sağlar
-        return config.getAuthenticationManager();
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+                // Kimlik doğrulama yöneticisini sağlar
+                return config.getAuthenticationManager();
+        }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://44.204.9.176"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
-        
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(
+                                Arrays.asList("http://localhost:3000"));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedOrigins(Arrays.asList("http://44.204.9.176"));
+                configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+                configuration.setExposedHeaders(Arrays.asList("Authorization"));
+
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration);
+                return source;
+        }
+
+    
+
+   
+
+    
+
+  
+
+
 
 }
