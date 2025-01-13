@@ -64,7 +64,7 @@ public class Reservations {
     private LocalDateTime updatedAt;
 
     @Column(name = "is_treated")
-    private boolean isTreated;
+    private Boolean isTreated = false;
 
     @Column(name = "treatment_date")
     private LocalDateTime treatmentDate;

@@ -1,6 +1,8 @@
 package com.hospital.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import com.hospital.entity.Reservations;
 import com.hospital.model.DoctorSpeciality;
@@ -23,4 +25,9 @@ public interface ReservationsRepository extends JpaRepository<Reservations, Long
 
     List<Reservations> findAllByReservationDateAndIsTreatedFalse(LocalDate date);
     List<Reservations> findAllByReservationDateAndIsTreatedTrue(LocalDate date);
+
+    @Modifying
+    @Query("UPDATE Reservations r SET r.isTreated = false WHERE r.isTreated IS NULL")
+    @jakarta.transaction.Transactional
+    void updateNullIsTreatedToFalse();
 }

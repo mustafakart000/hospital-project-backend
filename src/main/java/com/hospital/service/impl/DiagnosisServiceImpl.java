@@ -22,6 +22,16 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     private final DiagnosisRepository diagnosisRepository;
     private final DiagnosisMapper diagnosisMapper;
     private final ReservationsRepository reservationsRepository;
+
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        try {
+            reservationsRepository.updateNullIsTreatedToFalse();
+        } catch (Exception e) {
+            // Hata durumunda loglama yapılabilir
+        }
+    }
+
     @Override
     public DiagnosisRequest createDiagnosis(DiagnosisRequest request) {
         // Set creation time
@@ -38,7 +48,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         // Rezervasyonu güncelle
         reservation.setDiagnosis(savedEntity);
         reservation.setTreatmentDate(LocalDateTime.now());
-        reservation.setTreated(true);
+        reservation.setIsTreated(true);
         reservationsRepository.save(reservation);
         
         // Handle consultation request if needed

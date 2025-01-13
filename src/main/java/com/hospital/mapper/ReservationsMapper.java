@@ -17,6 +17,7 @@ public class ReservationsMapper {
                 .speciality(DoctorSpeciality.getByDisplayName(reservationRequest.getSpeciality().trim()))
                 .doctor(reservationRequest.getDoctor())
                 .patient(reservationRequest.getPatient())
+                .isTreated(false)
                 .build();
     }
 
@@ -44,7 +45,7 @@ public class ReservationsMapper {
                 .patientId(reservation.getPatient().getId())
                 .patientName(reservation.getPatient().getAd())
                 .patientSurname(reservation.getPatient().getSoyad())
-                .isTreated(reservation.isTreated())
+                .isTreated(reservation.getIsTreated())
                 .treatmentDate(reservation.getTreatmentDate())
                 .build();
     }
