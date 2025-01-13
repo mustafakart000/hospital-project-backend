@@ -43,6 +43,7 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/auth/login", "/auth/doctor/login",
                                                                 "/auth/admin/login", "/auth/register",
+                                                                "/api/v1/auth/test",
                                                                 "http://localhost:3000/**")
 
                                                 .permitAll()
@@ -114,11 +115,24 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
+
                 configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://44.204.9.176"));
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
                 configuration.setAllowCredentials(true);
+
+                configuration.setAllowedOrigins(Arrays.asList(
+                        "http://localhost:3000",
+                        "http://44.204.9.176:8080",
+                        "http://44.204.9.176",
+                        "http://172.31.86.165:8080",
+                        "http://localhost:8080"
+                ));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Access-Control-Allow-Origin"));
+
                 configuration.setExposedHeaders(Arrays.asList("Authorization"));
+                configuration.setAllowCredentials(true);
 
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                 source.registerCorsConfiguration("/**", configuration);
