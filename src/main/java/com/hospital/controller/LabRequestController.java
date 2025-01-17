@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/lab-requests")
+@RequestMapping("/api/lab-requests")
 @CrossOrigin
 public class LabRequestController {
     private final LabRequestService labRequestService;

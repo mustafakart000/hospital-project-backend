@@ -23,7 +23,7 @@ import com.hospital.service.AdminService;
 import com.hospital.service.DoctorService;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
     @Autowired
     private DoctorService doctorService;

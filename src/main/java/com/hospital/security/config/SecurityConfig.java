@@ -31,8 +31,6 @@ import java.util.Arrays;
 
 public class SecurityConfig {
 
-
-
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter)
                         throws Exception {
@@ -41,42 +39,51 @@ public class SecurityConfig {
                                 .csrf(csrf -> csrf.disable())
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/auth/login", "/auth/doctor/login",
-                                                                "/auth/admin/login", "/auth/register",
+                                                .requestMatchers(
+                                                                "/api/auth/login", "/api/auth/doctor/login",
+                                                                "/api/auth/admin/login", "/api/auth/register",
                                                                 "/api/v1/auth/test",
                                                                 "http://localhost:3000/**")
 
                                                 .permitAll()
-                                                .requestMatchers("/auth/doctor/register", "/auth/admin/register")
+                                                .requestMatchers("/api/auth/doctor/register", "/api/auth/admin/register")
                                                 .hasRole(Role.ADMIN.name())
-                                                .requestMatchers("/technician/**").hasAnyRole(Role.DOCTOR.name(),Role.ADMIN.name(),Role.TECHNICIAN.name())
-                                                .requestMatchers("/imaging-requests/create").hasAnyRole(Role.PATIENT.name(),Role.DOCTOR.name())
-                                                .requestMatchers("/auth/me", "/auth/allspecialties")
-                                                .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
-                                                .requestMatchers("/doctor/diagnoses/create").hasRole(Role.DOCTOR.name())
-                                                .requestMatchers("/patient/get/{id}", "/patient/update/{id}")
-                                                .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
-                                                .requestMatchers("/medicine/get/{id}", "/medicine/createAll",
-                                                                "/medicine/getAllByDoctorSpeciality/**")
-                                                .hasAnyRole(Role.DOCTOR.name(), Role.ADMIN.name())
-                                                .requestMatchers("/prescription/create").hasRole(Role.DOCTOR.name())
-                                                .requestMatchers("/prescription/get/{id}").hasRole(Role.DOCTOR.name())
-                                                .requestMatchers("/prescription/get/patient").hasRole(Role.PATIENT.name())
-                                                .requestMatchers("/prescription/get/patient/{patientId}").hasRole(Role.DOCTOR.name())
-                                                .requestMatchers("/prescription/**").hasRole(Role.DOCTOR.name())
-                                                .requestMatchers("/reservations/create").hasRole(Role.PATIENT.name())
-                                                .requestMatchers("/reservations/get/{id}",
-                                                                "/reservations/get/doctor/{doctorId}",
-                                                                "/reservations/get/patient/{patientId}",
-                                                                "/reservations/delete/{id}")
-                                                .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
-                                                .requestMatchers("/reservations/getall").hasRole(Role.DOCTOR.name())
-
-                                                .requestMatchers("/medical-record/create", "/medical-record/get/{id}",
-                                                                "/medical-record/patient/{patientId}")
+                                                .requestMatchers("/api/technician/**")
+                                                .hasAnyRole(Role.DOCTOR.name(), Role.ADMIN.name(),
+                                                                Role.TECHNICIAN.name())
+                                                .requestMatchers("/api/imaging-requests/create")
                                                 .hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
-                                                .requestMatchers("/medical-record/create/appointment")
+                                                .requestMatchers("/api/auth/me", "/api/auth/allspecialties")
+                                                .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
+                                                .requestMatchers("/api/doctor/diagnoses/create").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/api/patient/get/{id}", "/api/patient/update/{id}")
+                                                .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
+                                                .requestMatchers("/api/medicine/get/{id}", "/api/medicine/createAll",
+                                                                "/api/medicine/getAllByDoctorSpeciality/**")
+                                                .hasAnyRole(Role.DOCTOR.name(), Role.ADMIN.name())
+                                                .requestMatchers("/api/prescription/create").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/api/prescription/get/{id}").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/api/prescription/get/patient")
+                                                .hasRole(Role.PATIENT.name())
+                                                .requestMatchers("/api/prescription/get/patient/{patientId}")
                                                 .hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/api/prescription/**").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/api/reservations/create").hasRole(Role.PATIENT.name())
+                                                .requestMatchers("/api/reservations/get/{id}",
+                                                                "/api/reservations/get/doctor/{doctorId}",
+                                                                "/api/reservations/get/patient/{patientId}",
+                                                                "/api/reservations/delete/{id}")
+                                                .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name())
+                                                .requestMatchers("/api/reservations/getall").hasRole(Role.DOCTOR.name())
+
+                                                .requestMatchers("/api/medical-record/create", "/api/medical-record/get/{id}",
+                                                                "/api/medical-record/patient/{patientId}")
+                                                .hasAnyRole(Role.PATIENT.name(), Role.DOCTOR.name())
+                                                .requestMatchers("/api/medical-record/create/appointment")
+                                                .hasRole(Role.DOCTOR.name())
+
+                                                .requestMatchers("/api/admin/doctor/all")
+                                                .hasRole(Role.ADMIN.name())
 
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
@@ -122,11 +129,10 @@ public class SecurityConfig {
                 configuration.setAllowCredentials(true);
 
                 configuration.setAllowedOrigins(Arrays.asList(
-                        "http://localhost:3000",
-                        "http://44.204.9.176:8080",
-                        "http://44.204.9.176",
-                        "http://172.31.86.165:8080",
-                        "http://localhost:8080"
+                                "http://37.148.209.189:8080",  // Backend'in IP adresi ve portu
+                                "http://37.148.209.189",       // Backend'in IP adresi
+                                "http://localhost:8080",        // Localhost backend
+                                "http://localhost:3000"         // Frontend development
                 ));
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Access-Control-Allow-Origin"));
@@ -138,15 +144,5 @@ public class SecurityConfig {
                 source.registerCorsConfiguration("/**", configuration);
                 return source;
         }
-
-    
-
-   
-
-    
-
-  
-
-
 
 }

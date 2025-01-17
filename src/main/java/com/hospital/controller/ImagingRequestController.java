@@ -10,7 +10,7 @@ import com.hospital.dto.ImagingRequestResponseDTO;
 import java.util.List;
 
 @RestController
-@RequestMapping("/imaging-requests")
+@RequestMapping("/api/imaging-requests")
 @CrossOrigin
 public class ImagingRequestController {
     private final ImagingRequestService imagingRequestService;
