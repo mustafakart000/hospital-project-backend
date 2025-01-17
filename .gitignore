@@ -1,7 +1,8 @@
 
 # Maven
 target/
-!target/*.jar
+*.jar
+
 
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -21,7 +22,6 @@ target/
 .classpath
 .project
 .factorypath
-
 # IDE - Eclipse
 .apt_generated
 .classpath
