@@ -25,7 +25,7 @@ import com.hospital.service.ReservationsService;
 
 
 @RestController
-@RequestMapping("/reservations")
+@RequestMapping("/api/reservations")
 public class ReservationsController {
     
     @Autowired

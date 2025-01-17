@@ -12,7 +12,7 @@ import com.hospital.dto.AdminByDoctorRequest;
 import com.hospital.service.DoctorService;
 
 @RestController
-@RequestMapping("/doctor")
+@RequestMapping("/api/doctor")
 public class DoctorController {
 
     private final DoctorService doctorService;

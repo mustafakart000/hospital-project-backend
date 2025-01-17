@@ -18,7 +18,7 @@ import com.hospital.service.DiagnosisService;
 
 import lombok.RequiredArgsConstructor;
 @RestController
-@RequestMapping("/doctor/diagnoses")
+@RequestMapping("/api/doctor/diagnoses")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('DOCTOR')")
 public class DiagnosisController {
