@@ -67,14 +67,12 @@ jobs:
           "password:" { send "${{ secrets.SERVER_PASSWORD }}\r" }
         }
         expect "~#"
-        send "pid=\\\$(lsof -t -i:8080)\r"
-        expect "~#"
-        send "if \[ -n \\\"\\\$pid\" \]; then kill -9 \\\$pid; echo 'Killed process on port 8080'; fi\r"
+        send "if pgrep -f 'java.*hospital-management'; then pkill -f 'java.*hospital-management'; fi\r"
         expect "~#"
         send "exit\r"
         expect eof
         EOF
-
+    
     # Backend Sunucusunu Başlat
     - name: Start Backend on Server
       run: |
