@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Clear GitHub Actions Cache
       run: |
         sudo rm -rf /home/runner/work/_actions
@@ -18,9 +23,7 @@ jobs:
       run: echo "Secrets Erişimi Test Ediliyor"
       env:
         PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-    # Kodları Checkout Et
-    - name: Checkout Code
-      uses: actions/checkout@v3
+    
 
 
     # Maven Build İşlemi
