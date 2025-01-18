@@ -17,8 +17,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         
-        
-    #Maven Bağımlılıklarının Doğru Yüklendiğini Doğrulamak  
+    # Maven Bağımlılıklarının Doğru Yüklendiğini Doğrulamak  
     - name: Verify JWT Dependencies
       run: mvn dependency:tree | grep 'io.jsonwebtoken'
    
@@ -46,7 +45,6 @@ jobs:
           echo "Expect already installed"
         fi
 
-
     # JAR Dosyasını Sunucuya Gönder
     - name: Transfer Backend
       run: |
@@ -59,6 +57,19 @@ jobs:
        expect eof
        EOF
 
+    # Eski Süreci Durdur
+    - name: Kill Existing Process on Port
+      run: |
+        PORT=8080
+        PID=$(sudo lsof -t -i:$PORT)
+        if [ ! -z "$PID" ]; then
+          echo "Stopping process on port $PORT (PID: $PID)"
+          sudo kill -9 $PID
+        else
+          echo "No process running on port $PORT"
+        fi
+
+    # Backend Sunucusunu Başlat
     - name: Start Backend on Server
       run: |
        expect << EOF
