@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Test Secrets Access
+      run: echo "Secrets Erişimi Test Ediliyor"
+      env:
+        PASSWORD: ${{ secrets.SERVER_PASSWORD }}
     # Kodları Checkout Et
     - name: Checkout Code
       uses: actions/checkout@v2
@@ -27,7 +31,7 @@ jobs:
         send "${{ secrets.SERVER_PASSWORD }}\r"
         expect eof
         EOF
-
+              
     # Sunucuda JAR Dosyasını Çalıştır
     - name: Start Backend on Server
       run: |
