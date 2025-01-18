@@ -5,34 +5,42 @@ on:
     branches:
       - main
   workflow_dispatch:
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+    # Kodları Checkout Et
     - name: Checkout Code
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        
-    - name: Clear GitHub Actions Cache
+
+    # SSH için fingerprint doğrulama
+    - name: Add SSH Host Key to Known Hosts
       run: |
-        sudo rm -rf /home/runner/work/_actions
-        
+        ssh-keyscan -H 37.148.209.189 >> ~/.ssh/known_hosts
+
+    # Gereksiz Cache Temizliği Yerine Daha Spesifik İşlem
+    - name: Clear Specific GitHub Actions Cache
+      run: |
+        sudo rm -rf /home/runner/work/_actions/specific-folder  # Spesifik bir klasör temizlenmeli
+
+    # Secrets Erişimini Test Et
     - name: Test Secrets Access
       run: echo "Secrets Erişimi Test Ediliyor"
       env:
         PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-    
-
 
     # Maven Build İşlemi
     - name: Build Backend
       run: mvn clean package
-      
+
+    # Expect Paketini Yükle
     - name: Install Expect
       run: sudo apt-get update && sudo apt-get install -y expect
-      
+
     # JAR Dosyasını Sunucuya Gönder
     - name: Transfer Backend
       run: |
@@ -42,7 +50,7 @@ jobs:
         send "${{ secrets.SERVER_PASSWORD }}\r"
         expect eof
         EOF
-              
+
     # Sunucuda JAR Dosyasını Çalıştır
     - name: Start Backend on Server
       run: |
