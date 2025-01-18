@@ -17,11 +17,6 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    # SSH için fingerprint doğrulama
-    - name: Add SSH Host Key to Known Hosts
-      run: |
-        ssh-keyscan -H 37.148.209.189 >> ~/.ssh/known_hosts
-
     # Gereksiz Cache Temizliği Yerine Daha Spesifik İşlem
     - name: Clear Specific GitHub Actions Cache
       run: |
