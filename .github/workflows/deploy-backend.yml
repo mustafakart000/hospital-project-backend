@@ -58,23 +58,22 @@ jobs:
        EOF
 
    
-    # Port Kontrolü ve Temizliği
     - name: Check and Clear Port 8080
       run: |
-       expect << EOF
-       spawn ssh root@37.148.209.189
-       expect {
-         "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
-         "password:" { send "${{ secrets.SERVER_PASSWORD }}\r" }
-       }
-       expect "$ "
-       send "pid=\$(lsof -t -i:8080)\r"
-       expect "$ "
-       send "if [ -n \"\$pid\" ]; then kill -9 \$pid; echo 'Killed process on port 8080'; fi\r"
-       expect "$ "
-       send "exit\r"
-       expect eof
-       EOF
+        expect << EOF
+        spawn ssh root@37.148.209.189
+        expect {
+          "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+          "password:" { send "${{ secrets.SERVER_PASSWORD }}\r" }
+        }
+        expect "~#"
+        send "pid=\\\$(lsof -t -i:8080)\r"
+        expect "~#"
+        send "if \[ -n \\\"\\\$pid\" \]; then kill -9 \\\$pid; echo 'Killed process on port 8080'; fi\r"
+        expect "~#"
+        send "exit\r"
+        expect eof
+        EOF
 
     # Backend Sunucusunu Başlat
     - name: Start Backend on Server
