@@ -20,7 +20,8 @@ jobs:
         PASSWORD: ${{ secrets.SERVER_PASSWORD }}
     # Kodları Checkout Et
     - name: Checkout Code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+
 
     # Maven Build İşlemi
     - name: Build Backend
