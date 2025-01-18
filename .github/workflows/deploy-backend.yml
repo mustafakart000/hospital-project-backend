@@ -71,7 +71,23 @@ jobs:
         else
           echo "No process running on port $PORT"
         fi
-
+    # Port Kontrolü ve Temizliği
+    - name: Check and Clear Port 8080
+      run: |
+       expect << EOF
+       spawn ssh root@37.148.209.189
+       expect {
+         "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+         "password:" { send "${{ secrets.SERVER_PASSWORD }}\r" }
+       }
+       expect "$ "
+       send "pid=\$(lsof -t -i:8080)\r"
+       expect "$ "
+       send "if [ -n \"\$pid\" ]; then kill -9 \$pid; echo 'Killed process on port 8080'; fi\r"
+       expect "$ "
+       send "exit\r"
+       expect eof
+       EOF
 
     # Backend Sunucusunu Başlat
     - name: Start Backend on Server
@@ -84,6 +100,21 @@ jobs:
        }
        expect "$ "
        send "nohup java -jar /home/ubuntu/hospital-management-0.0.1-SNAPSHOT.jar --spring.profiles.active=local > app.log 2>&1 &\r"
+       expect "$ "
+       send "exit\r"
+       expect eof
+       EOF
+  # Uygulama Başlatma Kontrolü
+    - name: Verify Application Start
+      run: |
+       expect << EOF
+       spawn ssh root@37.148.209.189
+       expect {
+         "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+         "password:" { send "${{ secrets.SERVER_PASSWORD }}\r" }
+       }
+       expect "$ "
+       send "timeout 30 bash -c 'until curl -s http://localhost:8080 > /dev/null; do sleep 2; done'\r"
        expect "$ "
        send "exit\r"
        expect eof
