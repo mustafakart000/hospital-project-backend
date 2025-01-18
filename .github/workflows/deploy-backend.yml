@@ -57,20 +57,7 @@ jobs:
        expect eof
        EOF
 
-    # Eski Süreci Durdur
-    - name: Kill Existing Process on Port
-      run: |
-        if ! command -v lsof &> /dev/null; then
-          sudo apt-get update && sudo apt-get install -y lsof
-        fi
-        PORT=8080
-        PID=$(lsof -t -i:$PORT)
-        if [ -n "$PID" ]; then
-          echo "Stopping process on port $PORT (PID: $PID)"
-          kill -9 $PID
-        else
-          echo "No process running on port $PORT"
-        fi
+   
     # Port Kontrolü ve Temizliği
     - name: Check and Clear Port 8080
       run: |
