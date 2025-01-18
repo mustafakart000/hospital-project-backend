@@ -14,16 +14,6 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    # Java Kurulumu
-        # Java Kurulumunu Kontrol Et ve Yükle (Gerekirse)
-    - name: Check and Install Java
-      run: |
-        if ! java -version; then
-          sudo apt-get update
-          sudo apt-get install -y openjdk-17-jdk
-        fi
-  
-
     # Maven Build İşlemi
     - name: Build Backend
       run: mvn clean package
