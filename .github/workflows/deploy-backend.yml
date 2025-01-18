@@ -16,7 +16,15 @@ jobs:
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-
+        
+    #Bağımlılık İndirme ve JAR Oluşturma İşlemini Doğrulama    
+    - name: Validate JAR File
+      run: java -jar target/hospital-management-0.0.1-SNAPSHOT.jar
+      
+    #Maven Bağımlılıklarının Doğru Yüklendiğini Doğrulamak  
+    - name: Verify JWT Dependencies
+      run: mvn dependency:tree | grep 'io.jsonwebtoken'
+   
     # Gereksiz Cache Temizliği Yerine Daha Spesifik İşlem
     - name: Clear Specific GitHub Actions Cache
       run: |
@@ -30,7 +38,7 @@ jobs:
 
     # Maven Build İşlemi
     - name: Build Backend
-      run: mvn clean package
+      run: mvn clean install
 
     # Expect Paketini Yükle
     - name: Install Expect
