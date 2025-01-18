@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Clear GitHub Actions Cache
+      run: |
+        sudo rm -rf /home/runner/work/_actions
+        
     - name: Test Secrets Access
       run: echo "Secrets Erişimi Test Ediliyor"
       env:
