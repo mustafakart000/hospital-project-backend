@@ -60,14 +60,18 @@ jobs:
     # Eski Süreci Durdur
     - name: Kill Existing Process on Port
       run: |
+        if ! command -v lsof &> /dev/null; then
+          sudo apt-get update && sudo apt-get install -y lsof
+        fi
         PORT=8080
-        PID=$(sudo lsof -t -i:$PORT)
-        if [ ! -z "$PID" ]; then
+        PID=$(lsof -t -i:$PORT)
+        if [ -n "$PID" ]; then
           echo "Stopping process on port $PORT (PID: $PID)"
-          sudo kill -9 $PID
+          kill -9 $PID
         else
           echo "No process running on port $PORT"
         fi
+
 
     # Backend Sunucusunu Başlat
     - name: Start Backend on Server
