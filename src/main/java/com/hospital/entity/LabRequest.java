@@ -1,12 +1,15 @@
 package com.hospital.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 import com.hospital.enums.Priority;
+import com.hospital.entity.LabTestPdf;
 import com.hospital.enums.FastingStatus;
 import com.hospital.enums.Status;
 
@@ -16,37 +19,40 @@ import com.hospital.enums.Status;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LabRequest {
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "labRequest", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LabTestPdf> testPdfs = new ArrayList<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "patient_id", nullable = false)
-    private String patientId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 
-    @Column(name = "doctor_id", nullable = false)
+    @Column(name = "doctor_id")
     private String doctorId;
 
     @Column(name = "reservation_id")
     private String reservationId;
 
-    @ElementCollection
-    @CollectionTable(name = "lab_request_test_panels", 
-                    joinColumns = @JoinColumn(name = "lab_request_id"))
     @Column(name = "test_panel")
-    private List<String> testPanels;
+    private String testPanel;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    @Column(name = "fasting_status", nullable = false)
+    @Column(name = "fasting_status")
     @Enumerated(EnumType.STRING)
     private FastingStatus fastingStatus;
 
     @Column(columnDefinition = "TEXT")
     private String notes;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
@@ -55,6 +61,15 @@ public class LabRequest {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Column(name = "technician_id")
+    private String technicianId;
+
+    @Column(name = "results", columnDefinition = "TEXT")
+    private String results;
+
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
 
     @PrePersist
     protected void onCreate() {
@@ -65,5 +80,23 @@ public class LabRequest {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public void setTestPdfs(List<LabTestPdf> testPdfs) {
+        this.testPdfs.clear();
+        if (testPdfs != null) {
+            testPdfs.forEach(pdf -> pdf.setLabRequest(this));
+            this.testPdfs.addAll(testPdfs);
+        }
+    }
+
+    public void addTestPdf(LabTestPdf pdf) {
+        testPdfs.add(pdf);
+        pdf.setLabRequest(this);
+    }
+
+    public void removeTestPdf(LabTestPdf pdf) {
+        testPdfs.remove(pdf);
+        pdf.setLabRequest(null);
     }
 } 

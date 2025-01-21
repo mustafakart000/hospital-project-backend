@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.hospital.dto.RequestStatus;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +32,19 @@ public class ImagingRequest {
     private Doctor doctor;
 
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    private RequestStatus status = RequestStatus.PENDING;
+
+    private String imageUrl;
+    
+    @Lob
+    @Column(name = "image_data", columnDefinition = "LONGBLOB")
+    private byte[] imageData;
+    
+    private String findings;
+    private LocalDateTime completedAt;
+    private Long technicianId;
 
     @PrePersist
     protected void onCreate() {

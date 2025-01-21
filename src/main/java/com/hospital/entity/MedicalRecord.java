@@ -12,6 +12,8 @@ import jakarta.persistence.JoinColumn;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Data
 @Table(name = "medical_records")
@@ -37,5 +39,6 @@ public class MedicalRecord {
     // Yeni eklenen alan
     @ManyToOne
     @JoinColumn(name = "patient_id")
+    @JsonBackReference
     private Patient patient;
 }

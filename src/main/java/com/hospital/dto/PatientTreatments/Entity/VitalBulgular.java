@@ -2,6 +2,7 @@ package com.hospital.dto.PatientTreatments.Entity;
 
 import com.hospital.entity.Doctor;
 import com.hospital.entity.Patient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,10 +12,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class VitalBulgular {
 
     @Id
@@ -23,10 +28,12 @@ public class VitalBulgular {
     
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
+    @JsonIgnore
     private Doctor doctor;
 
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
+    @JsonIgnore
     private Patient patient;
 
     private String bloodPressure;

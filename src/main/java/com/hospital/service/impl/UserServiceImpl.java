@@ -200,16 +200,16 @@ public void validateUserUniqueness(DoctorRegisterRequest request) {
     List<String> errors = new ArrayList<>();
     
     if (userRepository.existsByUsername(request.getUsername())) {
-        errors.add("Bu kullanıcı adı zaten kullanılıyor");
+        errors.add("Bu kullanıcı adı sistemde kayıtlıdır. Lütfen farklı bir kullanıcı adı seçiniz.");
     }
     if (userRepository.existsByTcKimlik(request.getTcKimlik())) {
-        errors.add("Bu TC Kimlik numarası zaten kayıtlı");
+        errors.add("Bu T.C. Kimlik numarası ile kayıtlı bir kullanıcı bulunmaktadır.");
     }
     if (userRepository.existsByEmail(request.getEmail())) {
-        errors.add("Bu email adresi zaten kullanılıyor");
+        errors.add("Bu e-posta adresi sistemde kayıtlıdır. Lütfen farklı bir e-posta adresi kullanınız.");
     }
     if (userRepository.existsByTelefon(request.getTelefon())) {
-        errors.add("Bu telefon numarası zaten kayıtlı");
+        errors.add("Bu telefon numarası sistemde kayıtlıdır. Lütfen farklı bir telefon numarası giriniz.");
     }
     
     if (!errors.isEmpty()) {

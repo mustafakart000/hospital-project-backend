@@ -6,12 +6,18 @@ import org.springframework.web.bind.annotation.*;
 import com.hospital.service.ImagingRequestService;
 import com.hospital.dto.ImagingRequestDTO;
 import com.hospital.dto.ImagingRequestResponseDTO;
-
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import java.net.URI;
 
 @RestController
+
+@RequestMapping("/imaging-requests")
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Location")
+
 @RequestMapping("/api/imaging-requests")
 @CrossOrigin
+
 public class ImagingRequestController {
     private final ImagingRequestService imagingRequestService;
 
@@ -48,5 +54,28 @@ public class ImagingRequestController {
     public ResponseEntity<Void> deleteRequest(@PathVariable Long id) {
         imagingRequestService.deleteRequest(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/patient/{patientId}/images/{imageId}")
+    @PreAuthorize("hasAnyRole('PATIENT','DOCTOR')")
+    public ResponseEntity<ImagingRequestResponseDTO> getPatientImageRequest(
+            @PathVariable Long patientId,
+            @PathVariable Long imageId) {
+        return ResponseEntity.ok(imagingRequestService.getPatientImageRequest(patientId, imageId));
+    }
+
+    @GetMapping("/patient/{patientId}/images/{imageId}/data")
+    @PreAuthorize("hasAnyRole('PATIENT','DOCTOR','ADMIN','TECHNICIAN')")
+    public ResponseEntity<Object> getPatientImageData(
+            @PathVariable Long patientId,
+            @PathVariable Long imageId) {
+        ImagingRequestResponseDTO response = imagingRequestService.getPatientImageRequest(patientId, imageId);
+        if (response.getImagingUrl() != null && !response.getImagingUrl().isEmpty()) {
+            // URL'i redirect olarak dön
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(response.getImagingUrl()))
+                    .build();
+        }
+        return ResponseEntity.notFound().build();
     }
 } 
