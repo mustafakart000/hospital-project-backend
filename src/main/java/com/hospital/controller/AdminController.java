@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+
 import com.hospital.dto.AdminByAdminRequest;
 import com.hospital.dto.DoctorRequest;
 import com.hospital.dto.Response.AdminResponseList;
@@ -23,7 +24,7 @@ import com.hospital.service.AdminService;
 import com.hospital.service.DoctorService;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
     @Autowired
     private DoctorService doctorService;

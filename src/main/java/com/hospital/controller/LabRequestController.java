@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Base64;
 
 @RestController
-@RequestMapping("/lab-requests")
+@RequestMapping("/api/lab-requests")
 @CrossOrigin
 @RequiredArgsConstructor
 public class LabRequestController {

@@ -11,7 +11,7 @@ import com.hospital.dto.Response.ResponseBuilder;
 import java.util.List;
 
 @RestController
-@RequestMapping("/prescriptions")
+@RequestMapping("/api/prescriptions")
 @RequiredArgsConstructor
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;

@@ -17,7 +17,7 @@ import com.hospital.dto.Response.MedicineResponse;
 import com.hospital.service.MedicineService;
 import com.hospital.dto.request.MedicineRequest;
 @RestController
-@RequestMapping("/medicine")
+@RequestMapping("/api/medicine")
 public class MedicineController {
 
     private final MedicineService medicineService;
