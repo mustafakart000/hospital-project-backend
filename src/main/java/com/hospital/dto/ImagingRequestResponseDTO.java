@@ -7,6 +7,9 @@ import java.time.LocalDateTime;
 public class ImagingRequestResponseDTO {
     private Long id;
     private String imagingType;
+    private String imagingUrl;
+    private byte[] imageData;
+    private String findings;
     private String priority;
     private String notes;
     private String bodyPart;

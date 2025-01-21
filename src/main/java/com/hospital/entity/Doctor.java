@@ -14,6 +14,7 @@ import com.hospital.model.DoctorSpeciality;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
@@ -25,6 +26,7 @@ public class Doctor extends User {
     
 
     @OneToMany(mappedBy = "doctor")
+    @JsonIgnore
     private List<VitalBulgular> vitalBulgulars;
 
     private String unvan;
