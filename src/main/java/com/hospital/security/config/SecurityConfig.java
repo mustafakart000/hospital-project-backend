@@ -43,7 +43,8 @@ public class SecurityConfig {
                                                                 "/api/auth/login", "/api/auth/doctor/login",
                                                                 "/api/auth/admin/login", "/api/auth/register",
                                                                 "/api/v1/auth/test",
-                                                                "http://localhost:3000/**")
+                                                                "http://localhost:3000/**",
+                                                                "/api/auth/public-key")
 
                                                 .permitAll()
                                                 .requestMatchers("/api/auth/doctor/register", "/api/auth/admin/register")
