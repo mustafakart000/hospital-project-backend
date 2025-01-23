@@ -10,7 +10,7 @@ import lombok.Data;
 public class ImagingResultDTO {
     private Long requestId;
     private String imageUrl;
-    private byte[] imageData;
+    private String imageData;
     private String findings;
     private String notes;
     private LocalDateTime completedAt;

@@ -50,6 +50,26 @@ public class SecurityConfig {
                                                                 "/api/auth/admin/register")
                                                 .hasRole(Role.ADMIN.name())
 
+
+                                                .requestMatchers("/api/lab-requests/patient/{patientId}/pdfs","/api/lab-requests/patient/{patientId}/pdfs/{pdfId}")
+                                                .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name(),Role.ADMIN.name(),Role.TECHNICIAN.name())
+                                                .requestMatchers("/api/technician/lab-requests/all").hasAnyRole(Role.DOCTOR.name(),Role.ADMIN.name(),Role.TECHNICIAN.name())
+                                                .requestMatchers("/api/technician/**", "/api/technicians/**", "/api/technicians/imaging-requests/**", "/api/technicians/lab-requests/**")
+                                                .hasAnyRole(Role.DOCTOR.name(),Role.ADMIN.name(),Role.TECHNICIAN.name(),Role.PATIENT.name())
+                                                .requestMatchers("/api/imaging-requests/create").hasAnyRole(Role.PATIENT.name(),Role.DOCTOR.name())
+                                                .requestMatchers("/api/imaging-requests/patient/{patientId}","/api/imaging-requests/patient/{patientId}/data",
+                                                               "/api/imaging-requests/patient/{patientId}/images/{imageId}","/api/imaging-requests/patient/{patientId}/images/{imageId}/raw"
+                                                               ,"/api/imaging-requests/patient/{patientId}/images/{imageId}/data","/api/imaging-requests/patient/{patientId}/images/{imageId}/complete")
+                                                .hasAnyRole(Role.PATIENT.name(),Role.DOCTOR.name(),Role.ADMIN.name(),Role.TECHNICIAN.name())
+                                                .requestMatchers("/api/imaging-requests/patient/{patientId}/images/{imageId}").hasAnyRole(Role.PATIENT.name(),Role.DOCTOR.name())
+                                                .requestMatchers("/api/auth/me", "/api/auth/allspecialties")
+                                                .hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name(),Role.TECHNICIAN.name())
+                                                .requestMatchers("/api/doctor/diagnoses/create").hasRole(Role.DOCTOR.name())
+                                                .requestMatchers("/api/patient/get/{id}", "/api/patient/update/{id}")
+                                                .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name(),Role.ADMIN.name(),Role.TECHNICIAN.name())
+                                                .requestMatchers("/api/medicine/get/{id}", "/api/medicine/createAll",
+                                                                "/api/medicine/getAllByDoctorSpeciality/**")
+
                                                 .requestMatchers("/lab-requests/patient/{patientId}/pdfs")
                                                 .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name(), Role.ADMIN.name(),
                                                                 Role.TECHNICIAN.name())
@@ -75,8 +95,14 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/patient/get/{id}", "/api/patient/update/{id}")
                                                 .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name(), Role.ADMIN.name(),
                                                                 Role.TECHNICIAN.name())
+<<<<<<< HEAD
                                                 .requestMatchers("/api/medicine/get/{id}", "/api/medicine/createAll",
                                                                 "/api/medicine/getAllByDoctorSpeciality/**")
+=======
+                                                .requestMatchers("/medicine/get/{id}", "/medicine/createAll",
+                                                                "/medicine/getAllByDoctorSpeciality/**")
+
+>>>>>>> 13dcae33a7a861807d85f216582ecbaaf430e5ae
                                                 .hasAnyRole(Role.DOCTOR.name(), Role.ADMIN.name())
                                                 .requestMatchers("/api/technician/**")
                                                 .hasAnyRole(Role.DOCTOR.name(), Role.ADMIN.name(),
