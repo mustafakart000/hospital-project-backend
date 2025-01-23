@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/technicians")
+@RequestMapping("/api/technicians")
 @RequiredArgsConstructor
 public class TechnicianController {
 

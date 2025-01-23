@@ -11,13 +11,8 @@ import org.springframework.http.HttpStatus;
 import java.net.URI;
 
 @RestController
-
-@RequestMapping("/imaging-requests")
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Location")
-
 @RequestMapping("/api/imaging-requests")
-@CrossOrigin
-
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Location")
 public class ImagingRequestController {
     private final ImagingRequestService imagingRequestService;
 
