@@ -29,6 +29,7 @@ import com.hospital.model.Role;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.UserRepository;
 import com.hospital.security.JwtUtil;
+import com.hospital.security.config.AuthenticationService;
 import com.hospital.service.UserService;
 import com.hospital.mapper.DoctorMapper;
 import com.hospital.mapper.PatientMapper;
@@ -47,8 +48,9 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil; // JWT token işlemleri için
     private final AuthenticationManager authenticationManager; // Kimlik doğrulama işlemleri için
     private final DoctorRepository doctorRepository; // Doktor veritabanı işlemleri için
+    private final AuthenticationService authenticationService; // RSA şifre çözme için eklendi
 
-@PersistenceContext
+    @PersistenceContext
     private EntityManager entityManager;
 
     
@@ -79,32 +81,38 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public LoginResponse login(LoginRequest request) {
-        // Kullanıcı kimlik doğrulaması yapar
         try {
+            // RSA ile şifrelenmiş şifreyi çöz
+            String decryptedPassword = authenticationService.decryptPassword(request.getPassword());
+            if (decryptedPassword == null) {
+                throw new InvalidCredentialsException("Kullanıcı adı veya şifre hatalı");
+            }
+            
+            // Çözülmüş şifre ile kimlik doğrulama yap
             authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(request.getUsername(), decryptedPassword)
             );
+            
+            // Kullanıcıyı veritabanından bul
+            User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new InvalidCredentialsException("Kullanıcı bulunamadı"));
+                
+            // Kullanıcı için JWT token oluştur
+            String token = jwtUtil.generateToken(user.getUsername());
+            
+            // Giriş yanıtı oluştur ve dön
+            return LoginResponse.builder()
+                .username(user.getUsername())
+                .role(user.getRole())
+                .token(token)
+                .id(user.getId())
+                .message("Giriş başarılı")
+                .ad(user.getAd())
+                .soyad(user.getSoyad())
+                .build();
         } catch (AuthenticationException e) {
             throw new InvalidCredentialsException("Kullanıcı adı veya şifre hatalı");
         }
-        
-        // Kullanıcıyı veritabanından bulur
-        User user = userRepository.findByUsername(request.getUsername())
-            .orElseThrow(() -> new InvalidCredentialsException("Kullanıcı bulunamadı"));
-            
-        // Kullanıcı için JWT token oluşturur
-        String token = jwtUtil.generateToken(user.getUsername());
-        
-        // Giriş yanıtı oluşturur ve döner
-        return LoginResponse.builder()
-            .username(user.getUsername())
-            .role(user.getRole())
-            .token(token)
-            .id(user.getId())
-            .message("Giriş başarılı")
-            .ad(user.getAd())
-            .soyad(user.getSoyad())
-            .build();
     }
 
     @Override
@@ -142,12 +150,18 @@ public void registerAdmin(RegisterRequest request) {
 @Override
 public LoginResponse doctorLogin(LoginRequest request) {
     try {
+        // RSA ile şifrelenmiş şifreyi çöz
+        String decryptedPassword = authenticationService.decryptPassword(request.getPassword());
+        if (decryptedPassword == null) {
+            throw new InvalidCredentialsException("TC Kimlik veya şifre hatalı");
+        }
+
         // Doktoru TC Kimlik ile bul
         Doctor doctor = doctorRepository.findByTcKimlik(request.getTcKimlik())
             .orElseThrow(() -> new InvalidCredentialsException("Doktor bulunamadı"));
            
         // Şifre kontrolü
-        if (!passwordEncoder.matches(request.getPassword(), doctor.getPassword())) {
+        if (!passwordEncoder.matches(decryptedPassword, doctor.getPassword())) {
             throw new InvalidCredentialsException("TC Kimlik veya şifre hatalı");
         }
         

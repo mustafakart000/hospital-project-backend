@@ -1,5 +1,6 @@
 package com.hospital.controller;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import com.hospital.dto.DoctorRegisterRequest;
@@ -19,7 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
+import java.security.interfaces.RSAPublicKey;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -27,7 +28,8 @@ public class AuthController {
 
     private final UserService userService; // Kullanıcı servis sınıfı
     private final DoctorService doctorService ;
-    
+    private final RSAPublicKey publicKey;
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(userService.login(request));
@@ -71,6 +73,12 @@ public class AuthController {
     public ResponseEntity<List<Map<String, String>>> getAllSpecialties() {
         System.out.println("getAllSpecialties" + doctorService.getAllSpecialties());
         return ResponseEntity.ok(doctorService.getAllSpecialties());
+    }
+
+    @GetMapping("/public-key")
+    public ResponseEntity<String> getPublicKey() {
+        String publicKeyString = Base64.getEncoder().encodeToString(publicKey.getEncoded());
+        return ResponseEntity.ok(publicKeyString);
     }
 
 }
