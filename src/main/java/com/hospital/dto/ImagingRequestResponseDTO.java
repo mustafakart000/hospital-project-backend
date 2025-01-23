@@ -18,4 +18,5 @@ public class ImagingRequestResponseDTO {
     private Long doctorId;
     private String doctorName;
     private LocalDateTime createdAt;
+    private RequestStatus status;
 } 

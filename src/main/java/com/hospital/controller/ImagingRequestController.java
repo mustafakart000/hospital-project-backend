@@ -9,14 +9,18 @@ import com.hospital.dto.ImagingRequestResponseDTO;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import java.net.URI;
+import org.springframework.http.MediaType;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Base64;
+import com.hospital.dto.ImagingResultDTO;
+import com.hospital.entity.ImagingRequest;
 
 @RestController
 
-@RequestMapping("/imaging-requests")
+@RequestMapping("/api/imaging-requests")
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Location")
 
-@RequestMapping("/api/imaging-requests")
-@CrossOrigin
 
 public class ImagingRequestController {
     private final ImagingRequestService imagingRequestService;
@@ -57,11 +61,51 @@ public class ImagingRequestController {
     }
 
     @GetMapping("/patient/{patientId}/images/{imageId}")
-    @PreAuthorize("hasAnyRole('PATIENT','DOCTOR')")
-    public ResponseEntity<ImagingRequestResponseDTO> getPatientImageRequest(
-            @PathVariable Long patientId,
-            @PathVariable Long imageId) {
-        return ResponseEntity.ok(imagingRequestService.getPatientImageRequest(patientId, imageId));
+    @PreAuthorize("hasAnyRole('PATIENT','DOCTOR','ADMIN','TECHNICIAN')")
+    public ResponseEntity<Map<String, Object>> getImagingRequestImage(
+        @PathVariable Long patientId,
+        @PathVariable Long imageId
+    ) {
+        ImagingRequestResponseDTO requestDetails = imagingRequestService.getPatientImageRequest(patientId, imageId);
+        
+        if (requestDetails == null) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", "NOT_FOUND");
+            error.put("message", "Görüntüleme isteği bulunamadı");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+
+        byte[] imageBytes = imagingRequestService.getImageData(patientId, imageId);
+        
+        if (imageBytes == null || imageBytes.length == 0) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", "NOT_FOUND");
+            error.put("message", "Görüntü verisi henüz yüklenmemiş");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+        
+        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", imageId);
+        response.put("patientId", patientId);
+        response.put("imageData", base64Image);
+        response.put("imagingType", requestDetails.getImagingType());
+        response.put("status", requestDetails.getStatus());
+        
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/patient/{patientId}/images/{imageId}/raw")
+    public ResponseEntity<byte[]> getImagingRequestImageRaw(
+        @PathVariable Long patientId,
+        @PathVariable Long imageId
+    ) {
+        byte[] imageBytes = imagingRequestService.getImageData(patientId, imageId);
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.IMAGE_JPEG)
+            .body(imageBytes);
     }
 
     @GetMapping("/patient/{patientId}/images/{imageId}/data")
@@ -77,5 +121,32 @@ public class ImagingRequestController {
                     .build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/patient/{patientId}/images/{imageId}/complete")
+    @PreAuthorize("hasAnyRole('TECHNICIAN','DOCTOR','ADMIN','PATIENT')")
+    public ResponseEntity<ImagingRequestResponseDTO> completeImagingRequest(
+            @PathVariable Long patientId,
+            @PathVariable Long imageId,
+            @RequestBody ImagingResultDTO resultDTO) {
+        
+        try {
+            // Önce isteğin var olduğunu ve hastaya ait olduğunu kontrol et
+            ImagingRequestResponseDTO request = imagingRequestService.getPatientImageRequest(patientId, imageId);
+            if (request == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // İsteği tamamla
+            ImagingRequest completedRequest = imagingRequestService.completeImagingRequest(imageId, resultDTO);
+            
+            // Güncellenmiş isteği getir
+            return ResponseEntity.ok(imagingRequestService.getPatientImageRequest(patientId, imageId));
+        } catch (IllegalArgumentException e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", "BAD_REQUEST");
+            error.put("message", "Geçersiz görüntü verisi formatı: " + e.getMessage());
+            return ResponseEntity.badRequest().body(new ImagingRequestResponseDTO());
+        }
     }
 } 

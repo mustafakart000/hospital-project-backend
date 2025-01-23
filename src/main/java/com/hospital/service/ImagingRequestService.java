@@ -17,6 +17,7 @@ import com.hospital.dto.ImagingResultDTO;
 import com.hospital.dto.RequestStatus;
 import com.hospital.repository.PatientRepository;
 import com.hospital.repository.DoctorRepository;
+import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
@@ -85,6 +86,7 @@ public class ImagingRequestService {
         responseDTO.setImagingUrl(request.getImageUrl());
         responseDTO.setImageData(request.getImageData());
         responseDTO.setFindings(request.getFindings());
+        responseDTO.setStatus(request.getStatus());
         
         if (request.getPatient() != null) {
             responseDTO.setPatientId(request.getPatient().getId());
@@ -109,7 +111,13 @@ public class ImagingRequestService {
 
         request.setStatus(RequestStatus.COMPLETED);
         request.setImageUrl(resultDTO.getImageUrl());
-        request.setImageData(resultDTO.getImageData());
+        
+        // Base64 string'i byte array'e çevir
+        if (resultDTO.getImageData() != null && !resultDTO.getImageData().isEmpty()) {
+            byte[] decodedImage = Base64.getDecoder().decode(resultDTO.getImageData());
+            request.setImageData(decodedImage);
+        }
+        
         request.setFindings(resultDTO.getFindings());
         request.setNotes(resultDTO.getNotes());
         request.setCompletedAt(LocalDateTime.now());
@@ -164,5 +172,22 @@ public class ImagingRequestService {
         System.out.println("DTO dönüştürme başarılı - Image Data " + (responseDTO.getImageData() != null ? "mevcut" : "mevcut değil"));
         
         return responseDTO;
+    }
+
+    public byte[] getImageData(Long patientId, Long imageId) {
+        System.out.println("getImageData çağrıldı - Patient ID: " + patientId + ", Image ID: " + imageId);
+        
+        ImagingRequest request = imagingRequestRepository.findById(imageId)
+            .orElseThrow(() -> new ResourceNotFoundException("Görüntüleme isteği bulunamadı"));
+            
+        System.out.println("Görüntüleme isteği bulundu - Status: " + request.getStatus());
+        System.out.println("Image URL: " + request.getImageUrl());
+        System.out.println("Image Data: " + (request.getImageData() != null ? request.getImageData().length + " bytes" : "null"));
+            
+        if (!request.getPatient().getId().equals(patientId)) {
+            throw new ResourceNotFoundException("Bu görüntüleme isteği belirtilen hastaya ait değil");
+        }
+        
+        return request.getImageData();
     }
 } 
