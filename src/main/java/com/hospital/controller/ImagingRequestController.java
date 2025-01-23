@@ -17,16 +17,11 @@ import com.hospital.dto.ImagingResultDTO;
 import com.hospital.entity.ImagingRequest;
 
 @RestController
-<<<<<<< HEAD
-@RequestMapping("/api/imaging-requests")
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Location")
-=======
-
 @RequestMapping("/api/imaging-requests")
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Location")
 
 
->>>>>>> 13dcae33a7a861807d85f216582ecbaaf430e5ae
+
 public class ImagingRequestController {
     private final ImagingRequestService imagingRequestService;
 
