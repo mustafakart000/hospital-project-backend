@@ -68,7 +68,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/patient/get/{id}", "/api/patient/update/{id}")
                                                 .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name(),Role.ADMIN.name(),Role.TECHNICIAN.name())
                                                 .requestMatchers("/api/medicine/get/{id}", "/api/medicine/createAll",
-                                                                "/api/medicine/getAllByDoctorSpeciality/**")
+                                                                "/api/medicine/getAllByDoctorSpeciality/**").hasAnyRole(Role.DOCTOR.name(),Role.ADMIN.name())
 
                                                 .requestMatchers("/lab-requests/patient/{patientId}/pdfs")
                                                 .hasAnyRole(Role.DOCTOR.name(), Role.PATIENT.name(), Role.ADMIN.name(),
@@ -178,22 +178,15 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
-
-                configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://44.204.9.176"));
-                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-                configuration.setAllowCredentials(true);
-
                 configuration.setAllowedOrigins(Arrays.asList(
-                                "http://37.148.209.189:8080", // Backend'in IP adresi ve portu
-                                "http://37.148.209.189", // Backend'in IP adresi
-                                "http://localhost:8080", // Localhost backend
-                                "http://localhost:3000" // Frontend development
+                        "http://37.148.209.189:8080",
+                        "http://37.148.209.189",
+                        "http://localhost:8080",
+                        "http://localhost:3000",
+                        "http://healwell.online"
                 ));
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                configuration.setAllowedHeaders(
-                                Arrays.asList("Authorization", "Content-Type", "Access-Control-Allow-Origin"));
-
+                configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Access-Control-Allow-Origin"));
                 configuration.setExposedHeaders(Arrays.asList("Authorization"));
                 configuration.setAllowCredentials(true);
 

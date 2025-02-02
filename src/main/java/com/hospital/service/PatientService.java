@@ -73,8 +73,12 @@ public class PatientService {
             patient.setBirthDate(request.getBirthDate() != null ? request.getBirthDate() : patient.getBirthDate());
             patient.setKanGrubu(request.getKanGrubu() != null ? request.getKanGrubu() : patient.getKanGrubu());
             patient.setTcKimlik(request.getTcKimlik() != null ? request.getTcKimlik() : patient.getTcKimlik());
-            patient.setPassword(request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : patient.getPassword());
             patient.setUsername(request.getUsername() != null ? request.getUsername() : patient.getUsername());
+            
+             // Şifre güncelleme kontrolü (Eğer yeni şifre boş değilse güncellenir)
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            patient.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
             patientRepository.save(patient);
         } catch (DataIntegrityViolationException e) {
             throw new ResourceNotFoundException("Bu email adresi zaten kullanılıyor. Lütfen başka bir email adresi giriniz.");
