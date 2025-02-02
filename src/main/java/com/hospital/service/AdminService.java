@@ -80,7 +80,10 @@ public class AdminService {
             admin.setBirthDate(request.getBirthDate() != null ? request.getBirthDate() : admin.getBirthDate());
             admin.setKanGrubu(request.getKanGrubu() != null ? request.getKanGrubu() : admin.getKanGrubu());
             admin.setTcKimlik(request.getTcKimlik() != null ? request.getTcKimlik() : admin.getTcKimlik());
-            admin.setPassword(request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : admin.getPassword());
+
+            if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+                admin.setPassword(passwordEncoder.encode(request.getPassword()));
+            }
             
             adminRepository.save(admin);
         } catch (DataIntegrityViolationException e) {

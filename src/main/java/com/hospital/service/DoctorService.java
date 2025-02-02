@@ -118,10 +118,13 @@ public class DoctorService {
             doctor.setBirthDate(request.getBirthDate() != null ? request.getBirthDate() : doctor.getBirthDate());
             doctor.setKanGrubu(request.getKanGrubu() != null ? request.getKanGrubu() : doctor.getKanGrubu());
             doctor.setTcKimlik(request.getTcKimlik() != null ? request.getTcKimlik() : doctor.getTcKimlik());
-            doctor.setPassword(request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : doctor.getPassword());
             doctor.setDiplomaNo(request.getDiplomaNo() != null ? request.getDiplomaNo() : doctor.getDiplomaNo());
             doctor.setUnvan(request.getUnvan() != null ? request.getUnvan() : doctor.getUnvan());
             doctor.setUzmanlik(request.getUzmanlik() != null ? DoctorSpeciality.valueOf(request.getUzmanlik()) : doctor.getUzmanlik());
+
+            if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+                doctor.setPassword(passwordEncoder.encode(request.getPassword()));
+            }
             
             doctorRepository.save(doctor);
         } catch (DataIntegrityViolationException e) {
