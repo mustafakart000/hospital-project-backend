@@ -112,6 +112,7 @@ public class ImagingRequestService {
         request.setStatus(RequestStatus.COMPLETED);
         request.setImageUrl(resultDTO.getImageUrl());
         
+        
         // Base64 string'i byte array'e çevir
         if (resultDTO.getImageData() != null && !resultDTO.getImageData().isEmpty()) {
             byte[] decodedImage = Base64.getDecoder().decode(resultDTO.getImageData());
